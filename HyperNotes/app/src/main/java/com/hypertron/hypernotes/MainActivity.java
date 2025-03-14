@@ -1,7 +1,8 @@
-package com.example.hypernotes;
+package com.hypertron.hypernotes;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
 
 public class MainActivity extends AppCompatActivity {
     @Override

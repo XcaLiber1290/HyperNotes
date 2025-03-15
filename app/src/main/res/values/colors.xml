@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base colors -->
+    <color name="primary_light">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="accent_light">#FF4081</color>
+    <color name="accent_dark">#FF80AB</color>
+    
+    <!-- Note colors -->
+    <color name="note_color_1">#FFF9C4</color>
+    <color name="note_color_2">#FFCCBC</color>
+    <color name="note_color_3">#C8E6C9</color>
+    <color name="note_color_4">#BBDEFB</color>
+    
+    <!-- Theme colors -->
+    <color name="light_background">#F5F5F5</color>
+    <color name="dark_background">#121212</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="dark_surface">#1E1E1E</color>
+    <color name="light_on_surface">#212121</color>
+    <color name="dark_on_surface">#FFFFFF</color>
+</resources>

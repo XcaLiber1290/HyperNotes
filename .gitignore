@@ -27,7 +27,7 @@ replay_pid*
 .kotlin/
 # Ignore Gradle project-specific cache directory
 .gradle
-
+*.sh
 *.jks
 *.apk
 *.idsig

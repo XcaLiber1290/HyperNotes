@@ -1,49 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_height="280dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
+        <!-- Vertical line on the right side -->
+        <View
+            android:id="@+id/vLine"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25dp"
+            android:alpha="0.1"
+            android:background="#000000" />
+
+        <!-- Icon in the center -->
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/ivIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:alpha="0.5"
+            android:textSize="24sp"
+            android:textColor="#000000" />
+
+        <!-- Footer container -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:text="Note Title" />
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-        <TextView
-            android:id="@+id/tvPreview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:maxLines="3"
-            android:ellipsize="end"
-            android:text="Note preview content goes here..." />
+            <!-- Note title -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#333333"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            android:gravity="end"
-            android:text="Apr 15, 2023" />
-
-    </LinearLayout>
-
+            <!-- Time -->
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#777777"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

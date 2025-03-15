@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base colors -->
-    <color name="primary_light">#3F51B5</color>
-    <color name="primary_dark">#303F9F</color>
-    <color name="accent_light">#FF4081</color>
-    <color name="accent_dark">#FF80AB</color>
+    <!-- Primary colors -->
+    <color name="primary_light">#6200EE</color>
+    <color name="primary_dark">#3700B3</color>
+    <color name="accent_light">#03DAC6</color>
+    <color name="accent_dark">#018786</color>
     
-    <!-- Note colors -->
-    <color name="note_color_1">#FFF9C4</color>
-    <color name="note_color_2">#FFCCBC</color>
-    <color name="note_color_3">#C8E6C9</color>
-    <color name="note_color_4">#BBDEFB</color>
-    
-    <!-- Theme colors -->
-    <color name="light_background">#F5F5F5</color>
-    <color name="dark_background">#121212</color>
+    <!-- Light theme colors -->
+    <color name="light_background">#FFFFFF</color>
     <color name="light_surface">#FFFFFF</color>
+    <color name="light_on_surface">#000000</color>
+    
+    <!-- Dark theme colors -->
+    <color name="dark_background">#121212</color>
     <color name="dark_surface">#1E1E1E</color>
-    <color name="light_on_surface">#212121</color>
     <color name="dark_on_surface">#FFFFFF</color>
+    
+    <!-- Note colors based on reference image -->
+    <color name="note_pink">#E8D1DC</color>
+    <color name="note_purple">#A6A6C8</color>
+    <color name="note_blue">#B8C5D6</color>
+    <color name="note_peach">#E4BEB3</color>
+    <color name="note_yellow">#E0DFB1</color>
+    <color name="note_green">#B7D0C4</color>
+
 </resources>

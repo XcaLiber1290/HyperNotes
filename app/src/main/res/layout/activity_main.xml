@@ -2,45 +2,69 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:title="HyperNotes"
-        app:titleTextColor="?attr/colorOnPrimary" />
-    
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:padding="8dp"
-        android:clipToPadding="false" />
+        android:orientation="vertical">
 
+        <!-- Toolbar/App Bar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_notes"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="?attr/colorOnPrimary" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- RecyclerView for displaying notes -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="4dp"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+
+    <!-- FAB for adding new notes -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="Add new note"
-        android:src="@drawable/ic_add" />
+        android:contentDescription="@string/add_note"
+        android:src="@drawable/ic_add"
+        app:tint="?attr/colorOnPrimary" />
 
+    <!-- FAB for toggling theme -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|bottom"
+        android:layout_gravity="bottom|start"
         android:layout_margin="16dp"
-        android:contentDescription="Toggle theme"
-        android:src="@drawable/ic_theme" />
+        android:contentDescription="@string/toggle_theme"
+        android:src="@drawable/ic_theme"
+        app:tint="?attr/colorOnPrimary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

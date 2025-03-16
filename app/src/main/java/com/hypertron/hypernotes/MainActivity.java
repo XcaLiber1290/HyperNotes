@@ -32,6 +32,15 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         recyclerView = findViewById(R.id.recyclerView);
         FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
         FloatingActionButton fabTheme = findViewById(R.id.fabTheme);
+        ImageButton menuButton = findViewById(R.id.menu_button);
+
+        // Set up menu button
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v);
+            }
+        });
 
         // Set up RecyclerView
         noteList = new ArrayList<>();
@@ -62,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         // Add sample notes
         addSampleNotes();
     }
+
     
     private int calculateSpanCount() {
         // Get the screen width
@@ -72,6 +82,25 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         
         // Return at least 2 columns, more on wider screens
         return Math.max(2, screenWidth / noteWidth);
+    }
+
+    private void showPopupMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.inflate(R.menu.main_menu);
+        
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.action_settings) {
+                    // Handle settings click
+                    Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+        
+        popupMenu.show();
     }
 
     private void showAddNoteDialog() {
@@ -126,13 +155,30 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     }
 
     private void toggleTheme() {
-        isDarkMode = !isDarkMode;
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    isDarkMode = !isDarkMode;
+    if (isDarkMode) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    } else {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    }
+    Toast.makeText(this, isDarkMode ? R.string.dark_mode : R.string.light_mode, Toast.LENGTH_SHORT).show();
+}
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            // Open settings
+            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
+            return true;
         }
-        Toast.makeText(this, isDarkMode ? R.string.dark_mode : R.string.light_mode, Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -1,9 +1,19 @@
 <resources>
     <!-- Primary colors -->
-    <color name="primary_light">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
-    <color name="accent_light">#03DAC6</color>
-    <color name="accent_dark">#018786</color>
+    <color name="colorPrimary">#2C2C2C</color>
+    <color name="colorPrimaryDark">#202020</color>
+    <color name="colorAccent">#03DAC5</color>
+    
+    <!-- Base colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Text colors -->
+    <color name="text_dark">#333333</color>
+    <color name="text_gray">#777777</color>
+    <color name="text_light_gray">#BBBBBB</color>
+    
     
     <!-- Light theme colors -->
     <color name="light_background">#FFFFFF</color>
@@ -15,12 +25,25 @@
     <color name="dark_surface">#1E1E1E</color>
     <color name="dark_on_surface">#FFFFFF</color>
     
-    <!-- Note colors based on reference image -->
-    <color name="note_pink">#E8D1DC</color>
-    <color name="note_purple">#A6A6C8</color>
-    <color name="note_blue">#B8C5D6</color>
-    <color name="note_peach">#E4BEB3</color>
-    <color name="note_yellow">#E0DFB1</color>
-    <color name="note_green">#B7D0C4</color>
+        <!-- Note colors -->
+    <color name="note_pink">#F8BBD0</color>
+    <color name="note_purple">#D1C4E9</color>
+    <color name="note_blue">#BBDEFB</color>
+    <color name="note_peach">#FFCCBC</color>
+    <color name="note_yellow">#FFF9C4</color>
+    <color name="note_green">#C8E6C9</color>
+    <color name="note_lavender">#E1BEE7</color>
+    <color name="note_teal">#B2DFDB</color>
+    
+    <!-- New darker note colors -->
+    <color name="dark_note_pink">#ad5675</color>
+    <color name="dark_note_purple">#673ab7</color>
+    <color name="dark_note_blue">#3f51b5</color>
+    <color name="dark_note_peach">#ff7043</color>
+    <color name="dark_note_yellow">#ffc107</color>
+    <color name="dark_note_green">#4caf50</color>
+
+    <color name="accent_light">#4DEFE0</color> <!-- Lighter version of your colorAccent -->
+    <color name="accent_dark">#00B5A3</color> 
 
 </resources>

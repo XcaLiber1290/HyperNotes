@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
@@ -15,10 +17,12 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.graphics.drawable.ColorDrawable;
 
 public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNoteClickListener {
 
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     private NoteAdapter adapter;
     private List<Note> noteList;
     private boolean isDarkMode = false;
+    private Random random = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
         
-        // Add sample notes
-        addSampleNotes();
     }
 
     
@@ -108,65 +111,73 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     }
 
     private void showAddNoteDialog() {
-        // Create dialog for adding new note
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Create dialog for adding new note with custom layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialogTheme);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_note, null);
         builder.setView(dialogView);
         
         final EditText etTitle = dialogView.findViewById(R.id.etTitle);
+        final EditText etContent = dialogView.findViewById(R.id.etContent);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnSave = dialogView.findViewById(R.id.btnSave);
         
-        builder.setTitle(R.string.add_new_note);
-        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+        AlertDialog dialog = builder.create();
+        
+        // Set window properties for rounded corners
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
+        
+        dialog.show();
+        
+        // Set button click listeners
+        btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String title = etTitle.getText().toString().trim();
-                if (title.isEmpty()) {
-                    title = getString(R.string.untitled_note);
-                }
-                addNewNote(title);
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
         
-        builder.setNegativeButton(R.string.cancel, null);
-        
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = etTitle.getText().toString().trim();
+                String content = etContent.getText().toString().trim();
+                
+                if (title.isEmpty()) {
+                    title = getString(R.string.untitled_note);
+                }
+                
+                // Create new note with random color assignment
+                addNewNote(title, content);
+                dialog.dismiss();
+            }
+        });
     }
 
-    private void addNewNote(String title) {
+    private void addNewNote(String title, String content) {
         // Create a new note
         Note newNote = new Note(title, 
-                               getString(R.string.tap_to_edit), 
+                               content.isEmpty() ? getString(R.string.tap_to_edit) : content, 
                                System.currentTimeMillis());
+        
         noteList.add(0, newNote);
         adapter.notifyItemInserted(0);
         recyclerView.smoothScrollToPosition(0);
         
         Toast.makeText(this, R.string.note_created, Toast.LENGTH_SHORT).show();
     }
-    
-    private void addSampleNotes() {
-        // Add 6 sample notes as shown in your reference image
-        String[] titles = {"notebook 6", "notebook 5", "notebook 4", 
-                          "notebook 3", "notebook 2", "notebook 1"};
-        
-        for (String title : titles) {
-            Note note = new Note(title, getString(R.string.tap_to_edit), System.currentTimeMillis());
-            noteList.add(note);
-        }
-        
-        adapter.notifyDataSetChanged();
-    }
 
     private void toggleTheme() {
-    isDarkMode = !isDarkMode;
-    if (isDarkMode) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-    } else {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        isDarkMode = !isDarkMode;
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        Toast.makeText(this, isDarkMode ? R.string.dark_mode : R.string.light_mode, Toast.LENGTH_SHORT).show();
     }
-    Toast.makeText(this, isDarkMode ? R.string.dark_mode : R.string.light_mode, Toast.LENGTH_SHORT).show();
-}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

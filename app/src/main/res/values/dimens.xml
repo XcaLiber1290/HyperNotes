@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="note_width">180dp</dimen>
     <dimen name="note_min_height">200dp</dimen>

@@ -15,6 +15,10 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNoteClickListener {
 

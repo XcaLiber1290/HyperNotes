@@ -1,5 +1,6 @@
 package com.hypertron.hypernotes;
 
+import androidx.core.content.ContextCompat;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +69,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         
         // Assign color to note (consistent per position)
         int colorPos = position % colors.length;
-        holder.cardView.setCardBackgroundColor(context.getResources().getColor(colors[colorPos]));
+        holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, colors[colorPos]));
         
         // Set the icon using Unicode characters instead of drawables
         holder.ivIcon.setText(icons[colorPos]);

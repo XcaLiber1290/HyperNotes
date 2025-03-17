@@ -1,5 +1,3 @@
-<!-- app/src/main/res/layout/toolbar_main.xml -->
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
@@ -13,9 +11,18 @@
         android:id="@+id/toolbar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/all_notes"
+        android:text="@string/app_name"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+    <ImageButton
+        android:id="@+id/menu_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/menu"
+        android:src="@drawable/ic_menu" />
 
 </androidx.appcompat.widget.Toolbar>

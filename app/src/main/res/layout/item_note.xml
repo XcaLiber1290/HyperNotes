@@ -22,14 +22,13 @@
             android:background="#000000" />
 
         <!-- Icon in the center -->
-        <TextView
+        <ImageView
             android:id="@+id/ivIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_centerInParent="true"
             android:alpha="0.5"
-            android:textSize="24sp"
-            android:textColor="#000000" />
+            android:contentDescription="@string/note_icon" />
 
         <!-- Footer container -->
         <LinearLayout

@@ -27,21 +27,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     private Map<Long, Integer> noteColorMap = new HashMap<>();
     private Map<Long, Integer> noteIconMap = new HashMap<>();
     
-    // Icons for notes (using Unicode symbols)
-    private String[] icons = {
-        "✿",  // flower
-        "☽",  // moon
-        "☼",  // compass/sun symbol
-        "❀",  // flower alternative
-        "☀",  // sun
-        "➔",  // arrow/plane
-        "❋",  // flower shape
-        "✧",  // star
-        "◉",  // circle
-        "♫",  // music note
-        "❖",  // diamond
-        "✤"   // flower
-    };
+    // Reference to the string array of symbols - loaded from resources
+    private String[] icons;
     
     // Color scheme based on the provided design
     private int[] colors = {
@@ -64,6 +51,67 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         this.context = context;
         this.noteList = noteList;
         this.listener = listener;
+        
+        // Load the symbols from resources
+        this.icons = context.getResources().getStringArray(R.array.note_symbols);
+    }
+
+    // Add these methods to NoteAdapter.java
+public void setNoteColor(long noteId, int colorIndex) {
+    noteColorMap.put(noteId, colorIndex);
+}
+
+public void setNoteSymbol(long noteId, int symbolIndex) {
+    noteIconMap.put(noteId, symbolIndex);
+}
+
+// Map to store custom emojis
+private Map<Long, String> noteCustomEmojiMap = new HashMap<>();
+
+public void setNoteCustomEmoji(long noteId, String emoji) {
+    noteCustomEmojiMap.put(noteId, emoji);
+}
+
+// Modify the onBindViewHolder method to handle custom emojis
+    @Override
+    public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
+        Note note = noteList.get(position);
+        
+        // Set note data
+        holder.tvTitle.setText(note.getTitle());
+        holder.tvTime.setText(timeFormat.format(new Date(note.getTimestamp())));
+        
+        // Get or assign random color for this note
+        int colorIndex = getOrAssignColor(note.getTimestamp());
+        
+        // Set color
+        holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, colors[colorIndex]));
+        
+        // Check if there's a custom emoji for this note
+        if (noteCustomEmojiMap.containsKey(note.getTimestamp())) {
+            holder.ivIcon.setText(noteCustomEmojiMap.get(note.getTimestamp()));
+        } else {
+            // Get or assign random icon
+            int iconIndex = getOrAssignIcon(note.getTimestamp());
+            holder.ivIcon.setText(icons[iconIndex]);
+        }
+        
+        // Adjust text colors based on background color brightness
+        int color = ContextCompat.getColor(context, colors[colorIndex]);
+        boolean isDarkColor = isDarkColor(color);
+        
+        holder.tvTitle.setTextColor(isDarkColor ? 
+                ContextCompat.getColor(context, R.color.white) : 
+                ContextCompat.getColor(context, R.color.text_dark));
+        
+        holder.tvTime.setTextColor(isDarkColor ? 
+                ContextCompat.getColor(context, R.color.text_light_gray) : 
+                ContextCompat.getColor(context, R.color.text_gray));
+                
+        holder.ivIcon.setTextColor(isDarkColor ? 
+                ContextCompat.getColor(context, R.color.white) : 
+                ContextCompat.getColor(context, R.color.text_dark));
+        holder.ivIcon.setAlpha(0.5f);
     }
 
     @NonNull

@@ -1,0 +1,12 @@
+<!-- dialog_symbols.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSymbols"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_margin="8dp" />
+</LinearLayout>

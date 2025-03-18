@@ -34,14 +34,6 @@
     <color name="note_green">#C8E6C9</color>
     <color name="note_lavender">#E1BEE7</color>
     <color name="note_teal">#B2DFDB</color>
-    
-    <!-- New darker note colors -->
-    <color name="dark_note_pink">#ad5675</color>
-    <color name="dark_note_purple">#673ab7</color>
-    <color name="dark_note_blue">#3f51b5</color>
-    <color name="dark_note_peach">#ff7043</color>
-    <color name="dark_note_yellow">#ffc107</color>
-    <color name="dark_note_green">#4caf50</color>
 
     <color name="accent_light">#4DEFE0</color> <!-- Lighter version of your colorAccent -->
     <color name="accent_dark">#00B5A3</color> 

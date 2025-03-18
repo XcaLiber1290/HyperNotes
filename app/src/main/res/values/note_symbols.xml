@@ -1,0 +1,45 @@
+<resources>
+    <string-array name="note_symbols">
+        <!-- Original symbols -->
+        <item>✿</item>  <!-- flower -->
+        <item>☽</item>  <!-- moon -->
+        <item>☼</item>  <!-- compass/sun symbol -->
+        <item>❀</item>  <!-- flower alternative -->
+        <item>☀</item>  <!-- sun -->
+        <item>➔</item>  <!-- arrow/plane -->
+        <item>❋</item>  <!-- flower shape -->
+        <item>✧</item>  <!-- star -->
+        <item>◉</item>  <!-- circle -->
+        <item>♫</item>  <!-- music note -->
+        <item>❖</item>  <!-- diamond -->
+        <item>✤</item>  <!-- flower -->
+        
+        <!-- Greek letters -->
+        <item>α</item>  <!-- alpha -->
+        <item>β</item>  <!-- beta -->
+        <item>γ</item>  <!-- gamma -->
+        <item>δ</item>  <!-- delta -->
+        <item>ε</item>  <!-- epsilon -->
+        <item>ζ</item>  <!-- zeta -->
+        <item>η</item>  <!-- eta -->
+        <item>θ</item>  <!-- theta -->
+        <item>λ</item>  <!-- lambda -->
+        <item>μ</item>  <!-- mu -->
+        <item>π</item>  <!-- pi -->
+        <item>σ</item>  <!-- sigma -->
+        <item>ω</item>  <!-- omega -->
+        
+        <!-- Additional symbols -->
+        <item>◆</item>  <!-- diamond filled -->
+        <item>◇</item>  <!-- diamond outline -->
+        <item>△</item>  <!-- triangle -->
+        <item>▪</item>  <!-- square -->
+        <item>○</item>  <!-- circle outline -->
+        <item>→</item>  <!-- arrow -->
+        <item>☆</item>  <!-- star outline -->
+        <item>♦</item>  <!-- diamond playing card -->
+        <item>♥</item>  <!-- heart -->
+        <item>♠</item>  <!-- spade -->
+        <item>♣</item>  <!-- club -->
+    </string-array>
+</resources>

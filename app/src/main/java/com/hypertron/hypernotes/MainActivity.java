@@ -111,27 +111,52 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     }
 
     private void showAddNoteDialog() {
-        // Create dialog for adding new note with custom layout
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialogTheme);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_note, null);
-        builder.setView(dialogView);
-        
-        final EditText etTitle = dialogView.findViewById(R.id.etTitle);
-        final EditText etContent = dialogView.findViewById(R.id.etContent);
-        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-        Button btnSave = dialogView.findViewById(R.id.btnSave);
-        
-        AlertDialog dialog = builder.create();
-        
-        // Set window properties for rounded corners
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+    // Create dialog for adding new note with custom layout
+    AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialogTheme);
+    View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_note, null);
+    builder.setView(dialogView);
+    
+    final EditText etTitle = dialogView.findViewById(R.id.etTitle);
+    final EditText etContent = dialogView.findViewById(R.id.etContent);
+    Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+    Button btnSave = dialogView.findViewById(R.id.btnSave);
+    Button btnChooseColor = dialogView.findViewById(R.id.btnChooseColor);
+    Button btnChooseSymbol = dialogView.findViewById(R.id.btnChooseSymbol);
+    TextView tvSelectedColor = dialogView.findViewById(R.id.tvSelectedColor);
+    TextView tvSelectedSymbol = dialogView.findViewById(R.id.tvSelectedSymbol);
+    
+    // Reset selection
+    selectedColorIndex = -1;
+    selectedSymbolIndex = -1;
+    customEmoji = null;
+    
+    AlertDialog dialog = builder.create();
+    
+    // Set window properties for rounded corners
+    if (dialog.getWindow() != null) {
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+    }
+    
+    // Set up color chooser
+    btnChooseColor.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showColorChooserDialog(dialog, tvSelectedColor);
         }
-        
-        dialog.show();
-        
-        // Set button click listeners
+    });
+    
+    // Set up symbol chooser
+    btnChooseSymbol.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showSymbolChooserDialog(dialog, tvSelectedSymbol);
+        }
+    });
+    
+    dialog.show();
+    
+    // Set button click listeners
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,18 +174,142 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
                     title = getString(R.string.untitled_note);
                 }
                 
-                // Create new note with random color assignment
-                addNewNote(title, content);
+                // Create new note with selected or random color and symbol
+                addNewNote(title, content, selectedColorIndex, selectedSymbolIndex, customEmoji);
                 dialog.dismiss();
             }
         });
     }
 
-    private void addNewNote(String title, String content) {
-        // Create a new note
-        Note newNote = new Note(title, 
-                               content.isEmpty() ? getString(R.string.tap_to_edit) : content, 
-                               System.currentTimeMillis());
+    private void showColorChooserDialog(AlertDialog parentDialog, TextView tvSelectedColor) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.choose_color);
+        
+        // Get color names from resources
+        String[] colorNames = getResources().getStringArray(R.array.color_names);
+        
+        builder.setSingleChoiceItems(colorNames, selectedColorIndex, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedColorIndex = which;
+                tvSelectedColor.setText(colorNames[which]);
+                dialog.dismiss();
+            }
+        });
+        
+        // Add "Random" option
+        builder.setNeutralButton(R.string.random_color, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedColorIndex = -1;
+                tvSelectedColor.setText(R.string.random_color);
+            }
+        });
+        
+        builder.show();
+    }
+
+    private void showSymbolChooserDialog(AlertDialog parentDialog, TextView tvSelectedSymbol) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.choose_symbol);
+        
+        // Get symbols from resources
+        String[] symbols = getResources().getStringArray(R.array.note_symbols);
+        
+        // Create a grid layout for symbols
+        View symbolsView = LayoutInflater.from(this).inflate(R.layout.dialog_symbols, null);
+        RecyclerView recyclerView = symbolsView.findViewById(R.id.recyclerViewSymbols);
+        
+        // Set up the RecyclerView
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
+        
+        // Create adapter for symbols
+        SymbolAdapter symbolAdapter = new SymbolAdapter(symbols, new SymbolAdapter.OnSymbolClickListener() {
+            @Override
+            public void onSymbolClick(int position, String symbol) {
+                selectedSymbolIndex = position;
+                customEmoji = null;
+                tvSelectedSymbol.setText(symbol);
+                builder.create().dismiss();
+            }
+        });
+        
+        recyclerView.setAdapter(symbolAdapter);
+        builder.setView(symbolsView);
+        
+        // Add "Custom Emoji" option
+        builder.setPositiveButton(R.string.custom_emoji, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showCustomEmojiDialog(tvSelectedSymbol);
+            }
+        });
+        
+        // Add "Random" option
+        builder.setNeutralButton(R.string.random_symbol, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedSymbolIndex = -1;
+                customEmoji = null;
+                tvSelectedSymbol.setText(R.string.random_symbol);
+            }
+        });
+        
+        builder.show();
+    }
+
+    private void showCustomEmojiDialog(TextView tvSelectedSymbol) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.custom_emoji);
+        
+        // Create EditText for custom emoji
+        final EditText etEmoji = new EditText(this);
+        etEmoji.setHint("Enter emoji 😊");
+        etEmoji.setInputType(InputType.TYPE_CLASS_TEXT);
+        etEmoji.setFilters(new InputFilter[] { new InputFilter.LengthFilter(2) });
+        builder.setView(etEmoji);
+        
+        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                customEmoji = etEmoji.getText().toString();
+                if (!customEmoji.isEmpty()) {
+                    selectedSymbolIndex = -2; // Custom emoji indicator
+                    tvSelectedSymbol.setText(customEmoji);
+                } else {
+                    selectedSymbolIndex = -1;
+                    customEmoji = null;
+                    tvSelectedSymbol.setText(R.string.random_symbol);
+                }
+            }
+        });
+        
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        
+        builder.show();
+    }
+
+    private void addNewNote(String title, String content, int colorIndex, int symbolIndex, String customEmoji) {
+    // Create a new note with the provided parameters
+    Note newNote = new Note(title, 
+                           content.isEmpty() ? getString(R.string.tap_to_edit) : content, 
+                           System.currentTimeMillis());
+    
+    // Store the selection in the note-specific maps
+    if (colorIndex >= 0) {
+        adapter.setNoteColor(newNote.getTimestamp(), colorIndex);
+    }
+    
+        if (symbolIndex >= 0) {
+            adapter.setNoteSymbol(newNote.getTimestamp(), symbolIndex);
+        } else if (customEmoji != null) {
+            adapter.setNoteCustomEmoji(newNote.getTimestamp(), customEmoji);
+        }
         
         noteList.add(0, newNote);
         adapter.notifyItemInserted(0);

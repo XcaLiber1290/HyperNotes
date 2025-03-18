@@ -22,4 +22,21 @@
     <string name="opening">Opening</string>
     <string name="untitled_note">Untitled note</string>
     <string name="tap_to_edit">Tap to edit</string>
+    <string name="choose_color">Choose Color</string>
+    <string name="choose_symbol">Choose Symbol</string>
+    <string name="random_color">Random Color</string>
+    <string name="random_symbol">Random Symbol</string>
+    <string name="custom_emoji">Custom Emoji</string>
+    <string name="note_content">Note Content</string>
+    <string name="note_icon">Note Icon</string>
+    <string-array name="color_names">
+        <item>Pink</item>
+        <item>Purple</item>
+        <item>Blue</item>
+        <item>Peach</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Lavender</item>
+        <item>Teal</item>
+    </string-array>
 </resources>

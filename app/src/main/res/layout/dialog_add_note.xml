@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/choose_color"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginEnd="8dp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
             
@@ -52,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/choose_symbol"
+            android:textColor="?attr/colorOnSurface"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
     </LinearLayout>
     
@@ -83,7 +85,11 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:layout_marginEnd="8dp"
+<<<<<<< HEAD
             android:color="?attr/colorOnSurface"  
+=======
+            android:textColor="?attr/colorOnSurface"
+>>>>>>> d61638f (1.6)
             style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
         <Button

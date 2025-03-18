@@ -23,6 +23,9 @@ import android.widget.PopupMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.graphics.drawable.ColorDrawable;
+import android.widget.TextView;
+import android.text.InputFilter;
+import android.text.InputType;
 
 public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNoteClickListener {
 
@@ -31,6 +34,11 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     private List<Note> noteList;
     private boolean isDarkMode = false;
     private Random random = new Random();
+    private int selectedColorIndex = -1;
+    private int selectedSymbolIndex = -1;
+    private String customEmoji = null;
+    private Button btnChooseColor;
+    private Button btnChooseSymbol;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
         FloatingActionButton fabTheme = findViewById(R.id.fabTheme);
         ImageButton menuButton = findViewById(R.id.menu_button);
+
 
         // Set up menu button
         menuButton.setOnClickListener(new View.OnClickListener() {

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/dialog_background">
+    android:background="?attr/colorSurface">
 
     <TextView
         android:layout_width="match_parent"
@@ -60,6 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/random_color"
+        android:visibility="gone"
         android:layout_marginTop="8dp"/>
         
     <TextView
@@ -67,6 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/random_symbol"
+        android:visibility="gone"
         android:layout_marginBottom="16dp"/>
 
     <LinearLayout
@@ -81,12 +83,13 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:layout_marginEnd="8dp"
+            android:color="?attr/colorOnSurface"  
             style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="wrap_content"         
             android:text="@string/save"/>
     </LinearLayout>
 </LinearLayout>

@@ -121,39 +121,6 @@ public void setNoteCustomEmoji(long noteId, String emoji) {
         return new NoteViewHolder(view);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        Note note = noteList.get(position);
-        
-        // Set note data
-        holder.tvTitle.setText(note.getTitle());
-        holder.tvTime.setText(timeFormat.format(new Date(note.getTimestamp())));
-        
-        // Get or assign random color and icon for this note
-        int colorIndex = getOrAssignColor(note.getTimestamp());
-        int iconIndex = getOrAssignIcon(note.getTimestamp());
-        
-        // Set color and icon
-        holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, colors[colorIndex]));
-        holder.ivIcon.setText(icons[iconIndex]);
-        
-        // Adjust text colors based on background color brightness
-        int color = ContextCompat.getColor(context, colors[colorIndex]);
-        boolean isDarkColor = isDarkColor(color);
-        
-        holder.tvTitle.setTextColor(isDarkColor ? 
-                ContextCompat.getColor(context, R.color.white) : 
-                ContextCompat.getColor(context, R.color.text_dark));
-        
-        holder.tvTime.setTextColor(isDarkColor ? 
-                ContextCompat.getColor(context, R.color.text_light_gray) : 
-                ContextCompat.getColor(context, R.color.text_gray));
-                
-        holder.ivIcon.setTextColor(isDarkColor ? 
-                ContextCompat.getColor(context, R.color.white) : 
-                ContextCompat.getColor(context, R.color.text_dark));
-        holder.ivIcon.setAlpha(0.5f);
-    }
     
     private int getOrAssignColor(long noteId) {
         if (!noteColorMap.containsKey(noteId)) {

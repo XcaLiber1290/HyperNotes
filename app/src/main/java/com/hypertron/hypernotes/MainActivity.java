@@ -26,6 +26,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.widget.TextView;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.TypedValue;
+import android.content.res.Resources;
 
 public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNoteClickListener {
 
@@ -39,6 +41,11 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     private String customEmoji = null;
     private Button btnChooseColor;
     private Button btnChooseSymbol;
+    private int getThemeColor(int attr) {
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(attr, typedValue, true);
+        return typedValue.data;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,7 +220,12 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
         
-        builder.show();
+        AlertDialog dialog = builder.create();
+        // Add this line to set rounded corners
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        dialog.show();
     }
 
     private void showSymbolChooserDialog(AlertDialog parentDialog) {
@@ -235,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns);
         recyclerView.setLayoutManager(layoutManager);
         
-        // Add buttons BEFORE creating the dialog
         builder.setPositiveButton(R.string.custom_emoji, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -252,8 +263,13 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
         
-        // Create the dialog AFTER setting all builder properties
+        // Create the dialog
         AlertDialog symbolDialog = builder.create();
+        
+        // Add this line to ensure rounded corners
+        if (symbolDialog.getWindow() != null) {
+            symbolDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
         
         // Create and set the adapter
         SymbolAdapter symbolAdapter = new SymbolAdapter(symbols, new SymbolAdapter.OnSymbolClickListener() {
@@ -305,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        
+
         builder.show();
     }
 
@@ -392,7 +408,12 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
         
-        builder.show();
+        AlertDialog dialog = builder.create();
+        // Add this to ensure rounded corners
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        dialog.show();
     }
     
     private void deleteNote(int position) {
@@ -411,6 +432,12 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         });
         
         builder.setNegativeButton(R.string.cancel, null);
-        builder.show();
+        
+        AlertDialog dialog = builder.create();
+        // Add this to ensure rounded corners
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        }
+        dialog.show();
     }
 }

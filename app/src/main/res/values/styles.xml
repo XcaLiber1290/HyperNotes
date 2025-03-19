@@ -15,12 +15,12 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">?attr/colorOnSurface</item>
     </style>
     
     <!-- Custom button style for dialog -->  
     <style name="DialogButtonStyle" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
     </style>

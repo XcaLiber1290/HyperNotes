@@ -85,11 +85,7 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:layout_marginEnd="8dp"
-<<<<<<< HEAD
-            android:color="?attr/colorOnSurface"  
-=======
-            android:textColor="?attr/colorOnSurface"
->>>>>>> d61638f (1.6)
+            android:textColor="?attr/colorOnSurface" 
             style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
         <Button

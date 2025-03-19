@@ -8,5 +8,7 @@
         android:id="@+id/recyclerViewSymbols"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_margin="8dp" />
+        android:layout_margin="8dp"
+        android:textColor="?attr/colorOnSurface"
+        android:background="@drawable/dialog_background" />
 </LinearLayout>

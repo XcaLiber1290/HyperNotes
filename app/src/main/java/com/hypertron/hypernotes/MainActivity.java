@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         View symbolsView = LayoutInflater.from(this).inflate(R.layout.dialog_symbols, null);
         RecyclerView recyclerView = symbolsView.findViewById(R.id.recyclerViewSymbols);
         
-        // Set the view on the builder BEFORE creating the dialog
+        // Set the view on the builder
         builder.setView(symbolsView);
         
         // Get symbols from resources
@@ -235,22 +235,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns);
         recyclerView.setLayoutManager(layoutManager);
         
-        // Create the dialog
-        AlertDialog symbolDialog = builder.create();
-        
-        // Create and set the adapter AFTER setting the layout manager
-        SymbolAdapter symbolAdapter = new SymbolAdapter(symbols, new SymbolAdapter.OnSymbolClickListener() {
-            @Override
-            public void onSymbolClick(int position, String symbol) {
-                selectedSymbolIndex = position;
-                customEmoji = null;
-                btnChooseSymbol.setText(symbol);
-                symbolDialog.dismiss();
-            }
-        });
-        recyclerView.setAdapter(symbolAdapter);
-        
-        // Add buttons
+        // Add buttons BEFORE creating the dialog
         builder.setPositiveButton(R.string.custom_emoji, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -267,11 +252,28 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
         
+        // Create the dialog AFTER setting all builder properties
+        AlertDialog symbolDialog = builder.create();
+        
+        // Create and set the adapter
+        SymbolAdapter symbolAdapter = new SymbolAdapter(symbols, new SymbolAdapter.OnSymbolClickListener() {
+            @Override
+            public void onSymbolClick(int position, String symbol) {
+                selectedSymbolIndex = position;
+                customEmoji = null;
+                btnChooseSymbol.setText(symbol);
+                symbolDialog.dismiss();
+            }
+        });
+        recyclerView.setAdapter(symbolAdapter);
+        
+        // Show the dialog
         symbolDialog.show();
     }
 
    private void showCustomEmojiDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog dialog = builder.create();
         builder.setTitle(R.string.custom_emoji);
         
         // Create EditText for custom emoji
@@ -302,20 +304,21 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
                 dialog.cancel();
             }
         });
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
         
         builder.show();
     }
 
     private void addNewNote(String title, String content, int colorIndex, int symbolIndex, String customEmoji) {
-    // Create a new note with the provided parameters
-    Note newNote = new Note(title, 
-                           content.isEmpty() ? getString(R.string.tap_to_edit) : content, 
-                           System.currentTimeMillis());
-    
-    // Store the selection in the note-specific maps
-    if (colorIndex >= 0) {
-        adapter.setNoteColor(newNote.getTimestamp(), colorIndex);
-    }
+        // Create a new note with the provided parameters
+        Note newNote = new Note(title, 
+                            content.isEmpty() ? getString(R.string.tap_to_edit) : content, 
+                            System.currentTimeMillis());
+        
+        // Store the selection in the note-specific maps
+        if (colorIndex >= 0) {
+            adapter.setNoteColor(newNote.getTimestamp(), colorIndex);
+        }
     
         if (symbolIndex >= 0) {
             adapter.setNoteSymbol(newNote.getTimestamp(), symbolIndex);

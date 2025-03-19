@@ -220,34 +220,37 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.choose_symbol);
         
-        // Get symbols from resources
-        String[] symbols = getResources().getStringArray(R.array.note_symbols);
-        
-        // Create a grid layout for symbols
+        // Inflate the view first
         View symbolsView = LayoutInflater.from(this).inflate(R.layout.dialog_symbols, null);
         RecyclerView recyclerView = symbolsView.findViewById(R.id.recyclerViewSymbols);
         
-        // Set up the RecyclerView
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
+        // Set the view on the builder BEFORE creating the dialog
+        builder.setView(symbolsView);
         
-        // Create the dialog first so we can reference it in the callback
+        // Get symbols from resources
+        String[] symbols = getResources().getStringArray(R.array.note_symbols);
+        
+        // Set up the RecyclerView with Grid Layout Manager
+        int numColumns = 5; // You can adjust this based on screen size
+        GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns);
+        recyclerView.setLayoutManager(layoutManager);
+        
+        // Create the dialog
         AlertDialog symbolDialog = builder.create();
         
-        // Create adapter for symbols
+        // Create and set the adapter AFTER setting the layout manager
         SymbolAdapter symbolAdapter = new SymbolAdapter(symbols, new SymbolAdapter.OnSymbolClickListener() {
             @Override
             public void onSymbolClick(int position, String symbol) {
                 selectedSymbolIndex = position;
                 customEmoji = null;
                 btnChooseSymbol.setText(symbol);
-                symbolDialog.dismiss(); // Use the local dialog variable
+                symbolDialog.dismiss();
             }
         });
-        
         recyclerView.setAdapter(symbolAdapter);
-        builder.setView(symbolsView);
         
-        // Add "Custom Emoji" option
+        // Add buttons
         builder.setPositiveButton(R.string.custom_emoji, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -255,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
         
-        // Add "Random" option
         builder.setNeutralButton(R.string.random_symbol, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -265,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
         
-        symbolDialog.show(); // Show the dialog we created
+        symbolDialog.show();
     }
 
    private void showCustomEmojiDialog() {

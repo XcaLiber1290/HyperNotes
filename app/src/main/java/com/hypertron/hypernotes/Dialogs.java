@@ -80,6 +80,7 @@ public class Dialogs {
     /**
      * Show dialog for selecting a symbol
      */
+    
     public static void showSymbolChooserDialog(Context context, int currentSymbolIndex, SymbolSelectionListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.choose_symbol);
@@ -103,17 +104,7 @@ public class Dialogs {
         GridLayoutManager layoutManager = new GridLayoutManager(context, numColumns);
         recyclerView.setLayoutManager(layoutManager);
         
-        // Add button for custom emoji
-        builder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showCustomEmojiDialog(context, listener);
-            }
-        });
-        
-        builder.setNegativeButton(R.string.cancel, null);
-        
-        // Create the dialog
+        // Create the dialog before setting the adapter
         AlertDialog symbolDialog = builder.create();
         
         // Add this line to ensure rounded corners
@@ -125,21 +116,39 @@ public class Dialogs {
         SymbolAdapter symbolAdapter = new SymbolAdapter(symbols, true, new SymbolAdapter.OnSymbolClickListener() {
             @Override
             public void onSymbolClick(int position, String symbol, boolean isRandom) {
-                if (isRandom) {
-                    // Random selected
-                    if (listener != null) {
-                        listener.onSymbolSelected(-1, null);
+                try {
+                    if (isRandom) {
+                        // Random selected
+                        if (listener != null) {
+                            listener.onSymbolSelected(-1, null);
+                        }
+                    } else {
+                        // Regular symbol selected
+                        if (listener != null) {
+                            listener.onSymbolSelected(position, null);
+                        }
                     }
-                } else {
-                    // Regular symbol selected
-                    if (listener != null) {
-                        listener.onSymbolSelected(position, null);
-                    }
+                    symbolDialog.dismiss();
+                } catch (Exception e) {
+                    // Catch any exceptions to prevent crash
+                    e.printStackTrace();
+                    symbolDialog.dismiss();
                 }
-                symbolDialog.dismiss();
             }
         });
+        
         recyclerView.setAdapter(symbolAdapter);
+        
+        // Add button for custom emoji
+        builder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss(); // Dismiss the current dialog first
+                showCustomEmojiDialog(context, listener);
+            }
+        });
+        
+        builder.setNegativeButton(R.string.cancel, null);
         
         // Show the dialog
         symbolDialog.show();

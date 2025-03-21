@@ -113,9 +113,9 @@ public class Dialogs {
         }
         
         // Create and set the adapter with special handling for the first "Random" item
-        SymbolAdapter symbolAdapter = new SymbolAdapter(symbols, true, new SymbolAdapter.OnSymbolClickListener() {
+        SymbolAdapter symbolAdapter = new SymbolAdapter(context, true, new SymbolAdapter.OnSymbolClickListener() {
             @Override
-            public void onSymbolClick(int position, String symbol, boolean isRandom) {
+             public void onSymbolClick(int position, String symbol, boolean isRandom) {
                 try {
                     if (isRandom) {
                         // Random selected

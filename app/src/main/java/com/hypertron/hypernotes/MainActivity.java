@@ -1,33 +1,20 @@
 package com.hypertron.hypernotes;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.core.content.ContextCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import android.widget.ImageButton;
-import android.widget.PopupMenu;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.graphics.drawable.ColorDrawable;
-import android.widget.TextView;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.util.TypedValue;
-import android.content.res.Resources;
 
 public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNoteClickListener {
 
@@ -35,12 +22,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     private NoteAdapter adapter;
     private List<Note> noteList;
     private boolean isDarkMode = false;
-    private Random random = new Random();
-    private int selectedColorIndex = -1;
-    private int selectedSymbolIndex = -1;
-    private String customEmoji = null;
-    private Button btnChooseColor;
-    private Button btnChooseSymbol;
+
     private int getThemeColor(int attr) {
         TypedValue typedValue = new TypedValue();
         getTheme().resolveAttribute(attr, typedValue, true);
@@ -57,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
         FloatingActionButton fabTheme = findViewById(R.id.fabTheme);
         ImageButton menuButton = findViewById(R.id.menu_button);
-
 
         // Set up menu button
         menuButton.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +62,12 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAddNoteDialog();
+                Dialogs.showAddNoteDialog(MainActivity.this, new Dialogs.AddNoteListener() {
+                    @Override
+                    public void onNoteAdded(String title, String content, int colorIndex, int symbolIndex, String customEmoji) {
+                        addNewNote(title, content, colorIndex, symbolIndex, customEmoji);
+                    }
+                });
             }
         });
 
@@ -92,9 +78,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
                 toggleTheme();
             }
         });
-        
     }
-
     
     private int calculateSpanCount() {
         // Get the screen width
@@ -124,205 +108,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
         });
         
         popupMenu.show();
-    }
-
-    private void showAddNoteDialog() {
-        // Create dialog for adding new note with custom layout
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialogTheme);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_note, null);
-        builder.setView(dialogView);
-        
-        final EditText etTitle = dialogView.findViewById(R.id.etTitle);
-        final EditText etContent = dialogView.findViewById(R.id.etContent);
-        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-        Button btnSave = dialogView.findViewById(R.id.btnSave);
-        btnChooseColor = dialogView.findViewById(R.id.btnChooseColor);
-        btnChooseSymbol = dialogView.findViewById(R.id.btnChooseSymbol);
-        
-        // Reset selection
-        selectedColorIndex = -1;
-        selectedSymbolIndex = -1;
-        customEmoji = null;
-        
-        AlertDialog dialog = builder.create();
-        
-        // Set window properties for rounded corners
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        }
-        
-        // Set up color chooser
-        btnChooseColor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showColorChooserDialog(dialog);
-            }
-        });
-        
-        // Set up symbol chooser
-        btnChooseSymbol.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSymbolChooserDialog(dialog);
-            }
-        });
-        
-        dialog.show();
-        
-        // Set button click listeners
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = etTitle.getText().toString().trim();
-                String content = etContent.getText().toString().trim();
-                
-                if (title.isEmpty()) {
-                    title = getString(R.string.untitled_note);
-                }
-                
-                // Create new note with selected or random color and symbol
-                addNewNote(title, content, selectedColorIndex, selectedSymbolIndex, customEmoji);
-                dialog.dismiss();
-            }
-        });
-    }
-
-    private void showColorChooserDialog(AlertDialog parentDialog) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.choose_color);
-        
-        // Get color names from resources
-        String[] colorNames = getResources().getStringArray(R.array.color_names);
-        
-        builder.setSingleChoiceItems(colorNames, selectedColorIndex, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedColorIndex = which;
-                btnChooseColor.setText(colorNames[which]);
-                dialog.dismiss();
-            }
-        });
-        
-        // Add "Random" option
-        builder.setNeutralButton(R.string.random_color, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedColorIndex = -1;
-                btnChooseColor.setText(R.string.random_color);
-            }
-        });
-        
-        AlertDialog dialog = builder.create();
-        // Add this line to set rounded corners
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        }
-        dialog.show();
-    }
-
-    private void showSymbolChooserDialog(AlertDialog parentDialog) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.choose_symbol);
-        
-        // Inflate the view first
-        View symbolsView = LayoutInflater.from(this).inflate(R.layout.dialog_symbols, null);
-        RecyclerView recyclerView = symbolsView.findViewById(R.id.recyclerViewSymbols);
-        
-        // Set the view on the builder
-        builder.setView(symbolsView);
-        
-        // Get symbols from resources
-        String[] symbols = getResources().getStringArray(R.array.note_symbols);
-        
-        // Set up the RecyclerView with Grid Layout Manager
-        int numColumns = 5; // You can adjust this based on screen size
-        GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns);
-        recyclerView.setLayoutManager(layoutManager);
-        
-        builder.setPositiveButton(R.string.custom_emoji, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showCustomEmojiDialog();
-            }
-        });
-        
-        builder.setNeutralButton(R.string.random_symbol, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedSymbolIndex = -1;
-                customEmoji = null;
-                btnChooseSymbol.setText(R.string.random_symbol);
-            }
-        });
-        
-        // Create the dialog
-        AlertDialog symbolDialog = builder.create();
-        
-        // Add this line to ensure rounded corners
-        if (symbolDialog.getWindow() != null) {
-            symbolDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        }
-        
-        // Create and set the adapter
-        SymbolAdapter symbolAdapter = new SymbolAdapter(symbols, new SymbolAdapter.OnSymbolClickListener() {
-            @Override
-            public void onSymbolClick(int position, String symbol) {
-                selectedSymbolIndex = position;
-                customEmoji = null;
-                btnChooseSymbol.setText(symbol);
-                symbolDialog.dismiss();
-            }
-        });
-        recyclerView.setAdapter(symbolAdapter);
-        
-        // Show the dialog
-        symbolDialog.show();
-    }
-
-   private void showCustomEmojiDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        AlertDialog dialog = builder.create();
-        builder.setTitle(R.string.custom_emoji);
-        
-        // Create EditText for custom emoji
-        final EditText etEmoji = new EditText(this);
-        etEmoji.setHint("Enter emoji 😊");
-        etEmoji.setInputType(InputType.TYPE_CLASS_TEXT);
-        etEmoji.setFilters(new InputFilter[] { new InputFilter.LengthFilter(2) });
-        builder.setView(etEmoji);
-        
-        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                customEmoji = etEmoji.getText().toString();
-                if (!customEmoji.isEmpty()) {
-                    selectedSymbolIndex = -2; // Custom emoji indicator
-                    btnChooseSymbol.setText(customEmoji);
-                } else {
-                    selectedSymbolIndex = -1;
-                    customEmoji = null;
-                    btnChooseSymbol.setText(R.string.random_symbol);
-                }
-            }
-        });
-        
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-
-        builder.show();
     }
 
     private void addNewNote(String title, String content, int colorIndex, int symbolIndex, String customEmoji) {
@@ -387,57 +172,22 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     @Override
     public void onNoteLongClick(int position) {
         // Show options menu for the note (delete, share, etc.)
-        showNoteOptionsDialog(position);
-    }
-    
-    private void showNoteOptionsDialog(final int position) {
-        String[] options = {getString(R.string.edit), getString(R.string.delete)};
-        
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.note_options);
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+        Dialogs.showNoteOptionsDialog(this, position, new Dialogs.NoteOptionsListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    // Edit option
-                    onNoteClick(position);
-                } else if (which == 1) {
-                    // Delete option
-                    deleteNote(position);
-                }
+            public void onNoteEdit(int position) {
+                onNoteClick(position);
+            }
+
+            @Override
+            public void onNoteDelete(int position) {
+                deleteNote(position);
             }
         });
-        
-        AlertDialog dialog = builder.create();
-        // Add this to ensure rounded corners
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        }
-        dialog.show();
     }
     
     private void deleteNote(int position) {
-        // Confirm before deleting
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.confirm_delete);
-        builder.setMessage(R.string.delete_message);
-        
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                noteList.remove(position);
-                adapter.notifyItemRemoved(position);
-                Toast.makeText(MainActivity.this, R.string.note_deleted, Toast.LENGTH_SHORT).show();
-            }
-        });
-        
-        builder.setNegativeButton(R.string.cancel, null);
-        
-        AlertDialog dialog = builder.create();
-        // Add this to ensure rounded corners
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
-        }
-        dialog.show();
+        noteList.remove(position);
+        adapter.notifyItemRemoved(position);
+        Toast.makeText(MainActivity.this, R.string.note_deleted, Toast.LENGTH_SHORT).show();
     }
 }

@@ -29,6 +29,10 @@
     <string name="custom_emoji">Custom Emoji</string>
     <string name="note_content">Note Content</string>
     <string name="note_icon">Note Icon</string>
+    <string name="add">Add</string>
+    <string name="choose_emoji">Choose Emoji</string>
+    <string name="enter_emoji_hint">Enter emoji 😊</string>
+    <string name="random_shuffle_hint">The shuffle icon indicates a random symbol will be chosen</string>
     <string-array name="color_names">
         <item>Pink</item>
         <item>Purple</item>

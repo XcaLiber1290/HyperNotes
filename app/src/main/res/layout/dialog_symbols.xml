@@ -4,11 +4,23 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <!-- Hint text for the random shuffle option -->
+    <TextView
+        android:id="@+id/tvRandomHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/random_shuffle_hint"
+        android:textStyle="italic"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:visibility="visible"
+        android:textColor="?attr/colorOnSurfaceVariant" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSymbols"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_margin="8dp"
-        android:textColor="?attr/colorOnSurface"
         android:background="@drawable/dialog_background" />
 </LinearLayout>

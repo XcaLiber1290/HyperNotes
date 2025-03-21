@@ -38,15 +38,24 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.SymbolView
         boolean isRandomOption = includeRandomOption && position == 0;
         
         if (isRandomOption) {
-            // This is the Random option - use shuffle icon
+            // This is the Random option - use the shuffle symbol (first symbol in the array)
             holder.tvSymbol.setText(holder.itemView.getContext().getString(R.string.random_symbol));
-            holder.tvSymbolAsImage.setVisibility(View.GONE);
-            holder.ivSymbol.setVisibility(View.VISIBLE);
-            holder.ivSymbol.setImageResource(R.drawable.shuffle_24);
-            holder.ivSymbol.setContentDescription(holder.itemView.getContext().getString(R.string.random_symbol));
+            holder.ivSymbol.setVisibility(View.GONE);
+            holder.tvSymbolAsImage.setVisibility(View.VISIBLE);
+            holder.tvSymbolAsImage.setText(symbols[0]); // First symbol is now the shuffle symbol
+            holder.tvSymbolAsImage.setContentDescription(holder.itemView.getContext().getString(R.string.random_symbol));
         } else {
             // This is a regular symbol
-            int symbolIndex = includeRandomOption ? position - 1 : position;
+            int symbolIndex;
+            
+            if (includeRandomOption) {
+                // Skip first position (0) as it's used for random option UI
+                symbolIndex = position; // We want all symbols to be available
+            } else {
+                // We're not including the random option in the UI, so skip the shuffle symbol
+                symbolIndex = position + 1; // Skip the first symbol (shuffle)
+            }
+            
             String symbol = symbols[symbolIndex];
             
             // Set text on the TextView (it will be hidden but we keep it for accessibility)
@@ -61,7 +70,11 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.SymbolView
 
     @Override
     public int getItemCount() {
-        return includeRandomOption ? symbols.length + 1 : symbols.length;
+        if (includeRandomOption) {
+            return symbols.length; // Show all symbols plus the random option
+        } else {
+            return symbols.length - 1; // Skip the shuffle symbol
+        }
     }
 
     class SymbolViewHolder extends RecyclerView.ViewHolder {
@@ -90,7 +103,7 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.SymbolView
                             listener.onSymbolClick(-1, null, true);
                         } else {
                             // Regular symbol clicked
-                            int symbolIndex = includeRandomOption ? position - 1 : position;
+                            int symbolIndex = includeRandomOption ? position : position + 1;
                             listener.onSymbolClick(symbolIndex, symbols[symbolIndex], false);
                         }
                     }

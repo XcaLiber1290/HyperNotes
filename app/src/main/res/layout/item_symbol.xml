@@ -1,17 +1,36 @@
 <!-- item_symbol.xml -->
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:padding="8dp"
+    android:background="?attr/colorSecondary">
 
+    <!-- Keep this for accessibility but hide it visually -->
     <TextView
         android:id="@+id/tvSymbol"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="24sp"
+        android:visibility="gone"/>
+
+    <!-- Will be used for actual display -->
+    <ImageView
+        android:id="@+id/ivSymbol"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:contentDescription="Symbol"/>
+        
+    <!-- This TextView is styled to look like a symbol/icon -->
+    <TextView
+        android:id="@+id/tvSymbolAsImage"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="20sp" />
-</androidx.cardview.widget.CardView>
+        android:textSize="24sp"
+        android:background="@drawable/symbol_background"
+        android:textColor="?attr/colorOnSurface"/>
+</FrameLayout>

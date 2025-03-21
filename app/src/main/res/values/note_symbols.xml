@@ -41,6 +41,6 @@
         <item>♥</item>  <!-- heart -->
         <item>♠</item>  <!-- spade -->
         <item>♣</item>  <!-- club -->
-        <item>🔀</item> <!-- shuffle -->>
+        <item>🔀</item> <!-- shuffle -->
     </string-array>
 </resources>

@@ -19,7 +19,12 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.SymbolView
     }
 
     public SymbolAdapter(Context context, boolean includeRandomOption, OnSymbolClickListener listener) {
-        this.symbols = context.getResources().getStringArray(R.array.note_symbols); // Load symbols from XML
+        try {
+            this.symbols = context.getResources().getStringArray(R.array.note_symbols);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.symbols = new String[]{"❌"}; // Fallback
+        }
         this.listener = listener;
         this.includeRandomOption = includeRandomOption;
     }
@@ -34,28 +39,41 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.SymbolView
     @Override
     public void onBindViewHolder(@NonNull SymbolViewHolder holder, int position) {
         if (symbols == null || symbols.length == 0) {
-            holder.tvSymbolAsImage.setText("❌"); // Placeholder in case of error
+            holder.tvSymbolAsImage.setText("❌");
+            holder.tvSymbol.setText("Error");
+            holder.ivSymbol.setVisibility(View.GONE);
+            holder.tvSymbolAsImage.setVisibility(View.VISIBLE);
             return;
         }
 
-        if (includeRandomOption && position == 0) {
-            holder.tvSymbol.setText("🔀"); // Random symbol
-            holder.ivSymbol.setVisibility(View.GONE);
-            holder.tvSymbolAsImage.setVisibility(View.VISIBLE);
-            holder.tvSymbolAsImage.setText("🔀");
-            holder.tvSymbolAsImage.setContentDescription("Random Symbol");
-        } else {
-            int symbolIndex = includeRandomOption ? position - 1 : position;
-            if (symbolIndex >= 0 && symbolIndex < symbols.length) {
-                String symbol = symbols[symbolIndex];
-                holder.tvSymbol.setText(symbol);
+        try {
+            if (includeRandomOption && position == 0) {
+                // Random symbol
+                holder.tvSymbol.setText("🔀");
                 holder.ivSymbol.setVisibility(View.GONE);
                 holder.tvSymbolAsImage.setVisibility(View.VISIBLE);
-                holder.tvSymbolAsImage.setText(symbol);
-                holder.tvSymbolAsImage.setContentDescription(symbol);
+                holder.tvSymbolAsImage.setText("🔀");
+                holder.tvSymbolAsImage.setContentDescription("Random Symbol");
             } else {
-                holder.tvSymbolAsImage.setText("❌"); // Prevent crashes
+                int symbolIndex = includeRandomOption ? position - 1 : position;
+                if (symbolIndex >= 0 && symbolIndex < symbols.length) {
+                    String symbol = symbols[symbolIndex];
+                    holder.tvSymbol.setText(symbol);
+                    holder.ivSymbol.setVisibility(View.GONE);
+                    holder.tvSymbolAsImage.setVisibility(View.VISIBLE);
+                    holder.tvSymbolAsImage.setText(symbol);
+                    holder.tvSymbolAsImage.setContentDescription(symbol);
+                } else {
+                    // Out of bounds - show error symbol
+                    holder.tvSymbolAsImage.setText("❌");
+                    holder.tvSymbolAsImage.setContentDescription("Error");
+                }
             }
+        } catch (Exception e) {
+            // Catch any unexpected exceptions
+            e.printStackTrace();
+            holder.tvSymbolAsImage.setText("❌");
+            holder.tvSymbolAsImage.setContentDescription("Error");
         }
     }
 
@@ -76,16 +94,23 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.SymbolView
             tvSymbolAsImage = itemView.findViewById(R.id.tvSymbolAsImage);
             tvSymbol.setVisibility(View.GONE);
 
-            itemView.setOnClickListener(v -> {
-                int position = getAbsoluteAdapterPosition();
-                if (position == RecyclerView.NO_POSITION || listener == null) return;
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        int position = getAbsoluteAdapterPosition();
+                        if (position == RecyclerView.NO_POSITION || listener == null) return;
 
-                if (includeRandomOption && position == 0) {
-                    listener.onSymbolClick(-1, null, true);
-                } else {
-                    int symbolIndex = includeRandomOption ? position - 1 : position;
-                    if (symbolIndex >= 0 && symbolIndex < symbols.length) {
-                        listener.onSymbolClick(symbolIndex, symbols[symbolIndex], false);
+                        if (includeRandomOption && position == 0) {
+                            listener.onSymbolClick(-1, null, true);
+                        } else {
+                            int symbolIndex = includeRandomOption ? position - 1 : position;
+                            if (symbolIndex >= 0 && symbolIndex < symbols.length) {
+                                listener.onSymbolClick(symbolIndex, symbols[symbolIndex], false);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });

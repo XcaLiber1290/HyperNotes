@@ -1,26 +1,49 @@
-<!-- dialog_symbols.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/dialog_background">
 
-    <!-- Hint text for the random shuffle option -->
     <TextView
-        android:id="@+id/tvRandomHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose a Symbol"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal" />
+
+    <GridLayout
+        android:id="@+id/symbol_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/random_shuffle_hint"
-        android:textStyle="italic"
-        android:textSize="14sp"
-        android:gravity="center"
-        android:padding="8dp"
-        android:visibility="visible"
-        android:textColor="?attr/colorOnSurfaceVariant" />
+        android:columnCount="4"
+        android:padding="8dp">
+        <!-- Symbols will be dynamically added here -->
+    </GridLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSymbols"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_margin="8dp"
-        android:background="@drawable/dialog_background" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingTop="12dp">
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_background" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_background"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
 </LinearLayout>

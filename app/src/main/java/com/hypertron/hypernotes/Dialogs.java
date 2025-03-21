@@ -11,11 +11,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.hypertron.hypernotes.SymbolAdapter;
+
+
+import android.widget.ListView;
+import android.widget.ArrayAdapter;
 
 import android.graphics.drawable.ColorDrawable;
 
@@ -83,77 +88,55 @@ public class Dialogs {
     
     public static void showSymbolChooserDialog(Context context, int currentSymbolIndex, SymbolSelectionListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.choose_symbol);
-        
-        // Inflate the view first
-        View symbolsView = LayoutInflater.from(context).inflate(R.layout.dialog_symbols, null);
-        RecyclerView recyclerView = symbolsView.findViewById(R.id.recyclerViewSymbols);
-        TextView tvRandomHint = symbolsView.findViewById(R.id.tvRandomHint);
-        
-        // Show the random hint text
-        tvRandomHint.setVisibility(View.VISIBLE);
-        
-        // Set the view on the builder
-        builder.setView(symbolsView);
-        
-        // Get symbols from resources
-        String[] symbols = context.getResources().getStringArray(R.array.note_symbols);
-        
-        // Set up the RecyclerView with Grid Layout Manager
-        int numColumns = 5; // You can adjust this based on screen size
-        GridLayoutManager layoutManager = new GridLayoutManager(context, numColumns);
-        recyclerView.setLayoutManager(layoutManager);
-        
-        // Create the dialog before setting the adapter
-        AlertDialog symbolDialog = builder.create();
-        
-        // Add this line to ensure rounded corners
-        if (symbolDialog.getWindow() != null) {
-            symbolDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+
+        // Inflate custom layout
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_symbols, null);
+        if (dialogView == null) {
+            return; // Prevent crash if layout is missing
         }
-        
-        // Create and set the adapter with special handling for the first "Random" item
-        SymbolAdapter symbolAdapter = new SymbolAdapter(context, true, new SymbolAdapter.OnSymbolClickListener() {
-            @Override
-             public void onSymbolClick(int position, String symbol, boolean isRandom) {
-                try {
-                    if (isRandom) {
-                        // Random selected
-                        if (listener != null) {
-                            listener.onSymbolSelected(-1, null);
-                        }
-                    } else {
-                        // Regular symbol selected
-                        if (listener != null) {
-                            listener.onSymbolSelected(position, null);
-                        }
-                    }
-                    symbolDialog.dismiss();
-                } catch (Exception e) {
-                    // Catch any exceptions to prevent crash
-                    e.printStackTrace();
-                    symbolDialog.dismiss();
-                }
+        builder.setView(dialogView);
+
+        // Get RecyclerView and configure it
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recyclerViewSymbols);
+        if (recyclerView == null) {
+            return; // Prevent crash if RecyclerView is not found
+        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        // Get buttons
+        Button customEmojiButton = dialogView.findViewById(R.id.custom_emoji_button);
+        Button cancelButton = dialogView.findViewById(R.id.cancel_button);
+
+        if (customEmojiButton == null || cancelButton == null) {
+            return; // Prevent crash if buttons are missing
+        }
+
+        // Create and set the adapter
+        SymbolAdapter adapter = new SymbolAdapter(context, false, (position, symbol, isRandom) -> {
+            if (listener != null) {
+                listener.onSymbolSelected(isRandom ? -1 : position, isRandom ? "🔀" : symbol);
             }
         });
+        recyclerView.setAdapter(adapter);
+
+        // Create and show dialog
+        AlertDialog dialog = builder.create();
         
-        recyclerView.setAdapter(symbolAdapter);
-        
-        // Add button for custom emoji
-        builder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss(); // Dismiss the current dialog first
-                showCustomEmojiDialog(context, listener);
-            }
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background); // Ensure this resource exists
+        }
+
+        customEmojiButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            showCustomEmojiDialog(context, listener);
         });
-        
-        builder.setNegativeButton(R.string.cancel, null);
-        
-        // Show the dialog
-        symbolDialog.show();
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
-    
+
     /**
      * Show dialog for entering a custom emoji
      */

@@ -26,14 +26,14 @@
     <color name="dark_on_surface">#FFFFFF</color>
     
         <!-- Note colors -->
-    <color name="note_pink">#F8BBD0</color>
-    <color name="note_purple">#D1C4E9</color>
-    <color name="note_blue">#BBDEFB</color>
-    <color name="note_peach">#FFCCBC</color>
-    <color name="note_yellow">#FFF9C4</color>
-    <color name="note_green">#C8E6C9</color>
-    <color name="note_lavender">#E1BEE7</color>
-    <color name="note_teal">#B2DFDB</color>
+    <color name="note_blue">#42A5F5</color>
+    <color name="note_green">#66BB6A</color>
+    <color name="note_yellow">#FFEE58</color>
+    <color name="note_orange">#FFA726</color>
+    <color name="note_pink">#EC407A</color>
+    <color name="note_purple">#AB47BC</color>
+    <color name="note_teal">#26A69A</color>
+    <color name="note_red">#EF5350</color>
 
     <color name="accent_light">#4DEFE0</color> <!-- Lighter version of your colorAccent -->
     <color name="accent_dark">#00B5A3</color> 

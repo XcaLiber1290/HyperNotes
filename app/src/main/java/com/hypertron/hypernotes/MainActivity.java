@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -16,18 +19,23 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "HyperNotesPrefs";
     private static final String KEY_FIRST_RUN = "first_run";
     private static final String KEY_THEME_MODE = "theme_mode";
+    private static final int REQUEST_CREATE_NOTE = 1001;
     
     private RecyclerView recyclerView;
     private NoteAdapter noteAdapter;
     private List<Note> notesList;
     private FloatingActionButton fabAdd;
     private FloatingActionButton fabTheme;
+    
+    // Activity result launcher for CreateNoteActivity
+    private ActivityResultLauncher<Intent> createNoteLauncher;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         fabAdd = findViewById(R.id.fabAdd);
         fabTheme = findViewById(R.id.fabTheme);
         
+        // Register activity result launcher
+        registerActivityResultLaunchers();
+        
         // Apply accent colors to UI elements
         applyAccentColors();
         
@@ -59,6 +70,49 @@ public class MainActivity extends AppCompatActivity {
         
         // Set up click listeners
         setupClickListeners();
+    }
+    
+    private void registerActivityResultLaunchers() {
+        createNoteLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    // Process the returned note data
+                    Intent data = result.getData();
+                    String title = data.getStringExtra("title");
+                    String content = data.getStringExtra("content");
+                    int colorIndex = data.getIntExtra("colorIndex", -1);
+                    int symbolIndex = data.getIntExtra("symbolIndex", -1);
+                    String customEmoji = data.getStringExtra("customEmoji");
+                    
+                    // Get color resource based on colorIndex
+                    int colorResId;
+                    if (colorIndex == -1) {
+                        // Random color
+                        int[] colorResIds = getColorResourceIds();
+                        colorResId = colorResIds[new Random().nextInt(colorResIds.length)];
+                    } else {
+                        int[] colorResIds = getColorResourceIds();
+                        colorResId = colorResIds[colorIndex];
+                    }
+                    
+                    // Create new note with generated ID
+                    long newId = System.currentTimeMillis(); // Simple ID generation
+                    Note newNote = new Note(newId, title, content, System.currentTimeMillis(), colorResId);
+                    
+                    // Additional properties can be stored in a real implementation
+                    // Store symbolIndex or customEmoji if needed
+                    
+                    // Add to list and update adapter
+                    notesList.add(0, newNote); // Add to beginning of the list
+                    noteAdapter.notifyItemInserted(0);
+                    recyclerView.scrollToPosition(0);
+                    
+                    // Show confirmation
+                    Toast.makeText(MainActivity.this, "Note created", Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
     }
     
     private boolean isFirstRun() {
@@ -85,19 +139,11 @@ public class MainActivity extends AppCompatActivity {
         if (fabTheme != null) {
             fabTheme.setBackgroundTintList(ColorStateList.valueOf(accentColor));
         }
-        
-        // You can apply to other UI elements as needed
     }
     
     private void setupRecyclerView() {
-        // Initialize notes list (typically loaded from database)
+        // Initialize notes list
         notesList = new ArrayList<>();
-        
-        // Sample notes for demonstration
-        // In a real app, you would load these from a database
-        notesList.add(new Note(1, "Shopping List", "Milk, Eggs, Bread", System.currentTimeMillis(), R.color.note_blue));
-        notesList.add(new Note(2, "Meeting Notes", "Discuss project timeline", System.currentTimeMillis(), R.color.note_yellow));
-        notesList.add(new Note(3, "Ideas", "App features: dark mode, export options", System.currentTimeMillis(), R.color.note_green));
         
         // Set up adapter
         noteAdapter = new NoteAdapter(this, notesList);
@@ -117,9 +163,9 @@ public class MainActivity extends AppCompatActivity {
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Launch NoteEditorActivity to create a new note
-                Intent intent = new Intent(MainActivity.this, NoteEditorActivity.class);
-                startActivity(intent);
+                // Launch CreateNoteActivity to create a new note
+                Intent intent = new Intent(MainActivity.this, CreateNoteActivity.class);
+                createNoteLauncher.launch(intent);
             }
         });
         
@@ -130,6 +176,19 @@ public class MainActivity extends AppCompatActivity {
                 toggleThemeMode();
             }
         });
+    }
+    
+    private int[] getColorResourceIds() {
+        return new int[] {
+            R.color.note_blue,
+            R.color.note_green,
+            R.color.note_yellow,
+            R.color.note_orange,
+            R.color.note_red,
+            R.color.note_purple,
+            R.color.note_pink,
+            R.color.note_teal
+        };
     }
     
     private void toggleThemeMode() {

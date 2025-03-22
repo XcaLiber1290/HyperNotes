@@ -27,4 +27,59 @@
         <item>large</item>
         <item>xlarge</item>
     </string-array>
+
+    <string-array name="note_symbols">
+         
+        <item>✿</item>  <!-- flower -->
+        <item>☼</item>  <!-- compass/sun symbol -->
+        <item>❀</item>  <!-- flower alternative -->
+        <item>➔</item>  <!-- arrow/plane -->
+        <item>❋</item>  <!-- flower shape -->
+        <item>✧</item>  <!-- star -->
+        <item>◉</item>  <!-- circle -->
+        <item>♫</item>  <!-- music note -->
+        <item>❖</item>  <!-- diamond -->
+        <item>✤</item>  <!-- flower -->
+        
+        <!-- Greek letters -->
+        <item>α</item>  <!-- alpha -->
+        <item>β</item>  <!-- beta -->
+        <item>γ</item>  <!-- gamma -->
+        <item>δ</item>  <!-- delta -->
+        <item>ε</item>  <!-- epsilon -->
+        <item>ζ</item>  <!-- zeta -->
+        <item>η</item>  <!-- eta -->
+        <item>θ</item>  <!-- theta -->
+        <item>λ</item>  <!-- lambda -->
+        <item>μ</item>  <!-- mu -->
+        <item>π</item>  <!-- pi -->
+        <item>σ</item>  <!-- sigma -->
+        <item>ω</item>  <!-- omega -->
+        
+        <!-- Additional symbols -->
+        <item>◆</item>  <!-- diamond filled -->
+        <item>◇</item>  <!-- diamond outline -->
+        <item>△</item>  <!-- triangle -->
+        <item>▪</item>  <!-- square -->
+        <item>○</item>  <!-- circle outline -->
+        <item>→</item>  <!-- arrow -->
+        <item>☆</item>  <!-- star outline -->
+        <item>§</item>  <!-- section -->
+        <item>¶</item>  <!-- paragraph -->
+        <item>†</item>  <!-- dagger -->
+        <item>‡</item>  <!-- double dagger -->
+        <item>•</item>  <!-- bullet -->
+        <item>⁂</item>  <!-- asterism -->
+        <item>⁜</item>  <!-- dotted cross -->
+        <item>⁕</item>  <!-- flower punctuation -->
+    </string-array>
+    
+    <array name="note_colors">
+        <item>@color/note_blue</item>
+        <item>@color/note_green</item>
+        <item>@color/note_yellow</item>
+        <item>@color/note_orange</item>
+        <item>@color/note_red</item>
+    </array>
+
 </resources>

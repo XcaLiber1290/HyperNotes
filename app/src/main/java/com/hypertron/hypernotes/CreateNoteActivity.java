@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -47,6 +48,11 @@ public class CreateNoteActivity extends AppCompatActivity {
     
     private ColorAdapter colorAdapter;
     private SymbolAdapter symbolAdapter;
+    
+    // Interface for color click listener
+    public interface OnColorClickListener {
+        void onColorClick(int colorIndex);
+    }
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +121,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         recyclerViewColors.setVisibility(View.GONE);
         
         // Create color adapter
-        colorAdapter = new ColorAdapter(this, color -> {
+        colorAdapter = new ColorAdapter(this, getColorResourceIds(), color -> {
             selectedColorIndex = color;
             updatePreview();
             toggleColorSelector(); // Hide after selection
@@ -258,7 +264,12 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
         
         // Set card background color
-        int color = getResources().getColor(colorResId);
+        int color;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            color = getResources().getColor(colorResId, getTheme());
+        } else {
+            color = getResources().getColor(colorResId);
+        }
         previewCardView.setCardBackgroundColor(color);
         
         // Get symbol (random or selected)
@@ -279,6 +290,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         tvPreviewIcon.setText(symbol);
     }
     
+    // Make this method available to the static inner class
     private int[] getColorResourceIds() {
         return new int[] {
             R.color.note_blue,
@@ -317,28 +329,25 @@ public class CreateNoteActivity extends AppCompatActivity {
         finish();
     }
     
-    // Inner class for color selection
-    private class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> {
+    // Static inner class for color selection
+    private static class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> {
         private final Context context;
-        private final List<Integer> colorResIds;
+        private final List<Integer> colorIndices;
         private final OnColorClickListener listener;
+        private final int[] colorResourceIds;
         
-        public interface OnColorClickListener {
-            void onColorClick(int colorIndex);
-        }
-        
-        public ColorAdapter(Context context, OnColorClickListener listener) {
+        public ColorAdapter(Context context, int[] colorResourceIds, OnColorClickListener listener) {
             this.context = context;
             this.listener = listener;
+            this.colorResourceIds = colorResourceIds;
             
             // Add colors + random option
-            this.colorResIds = new ArrayList<>();
-            this.colorResIds.add(-1); // Random color option
+            this.colorIndices = new ArrayList<>();
+            this.colorIndices.add(-1); // Random color option
             
-            // Add all color resource IDs
-            int[] colors = getColorResourceIds();
-            for (int i = 0; i < colors.length; i++) {
-                this.colorResIds.add(i);
+            // Add all color indices
+            for (int i = 0; i < colorResourceIds.length; i++) {
+                this.colorIndices.add(i);
             }
         }
         
@@ -351,7 +360,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            int colorIndex = colorResIds.get(position);
+            int colorIndex = colorIndices.get(position);
             
             if (colorIndex == -1) {
                 // Random color - show special indicator
@@ -360,12 +369,21 @@ public class CreateNoteActivity extends AppCompatActivity {
             } else {
                 // Regular color
                 holder.colorView.setText("");
-                int colorResId = getColorResourceIds()[colorIndex];
-                holder.colorView.setBackgroundColor(context.getResources().getColor(colorResId));
+                int colorResId = colorResourceIds[colorIndex];
+                
+                // Handle deprecated getColor method
+                int color;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    color = context.getResources().getColor(colorResId, context.getTheme());
+                } else {
+                    color = context.getResources().getColor(colorResId);
+                }
+                holder.colorView.setBackgroundColor(color);
             }
             
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null) {
+                    // Just pass the colorIndex parameter as is
                     listener.onColorClick(colorIndex);
                 }
             });
@@ -373,7 +391,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         
         @Override
         public int getItemCount() {
-            return colorResIds.size();
+            return colorIndices.size();
         }
         
         class ViewHolder extends RecyclerView.ViewHolder {

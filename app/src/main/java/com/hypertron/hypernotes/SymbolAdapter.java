@@ -54,7 +54,7 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.ViewHolder
     @Override
     public int getItemViewType(int position) {
         String symbol = symbols.get(position);
-        if (symbol.equals("🔀")) {
+        if (symbol.equals("⟳")) {
             return VIEW_TYPE_RANDOM;
         } else if (symbol.equals("+")) {
             return VIEW_TYPE_ADD;
@@ -95,7 +95,7 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.ViewHolder
                     // The dialog will handle custom emoji input
                     listener.onSymbolClick(-2, symbol, false);
                 } else {
-                    listener.onSymbolClick(position - (symbols.contains("🔀") ? 1 : 0) - (symbols.contains("+") ? 1 : 0), 
+                    listener.onSymbolClick(position - (symbols.contains("⟳") ? 1 : 0) - (symbols.contains("+") ? 1 : 0), 
                                         symbol, false);
                 }
             }

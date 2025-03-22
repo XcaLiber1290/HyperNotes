@@ -15,9 +15,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 import android.util.TypedValue;
+import android.view.Window;
+import android.view.WindowManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNoteClickListener {
 
+    private static final String KEY_ACCENT_COLOR = "accent_color";
     private RecyclerView recyclerView;
     private NoteAdapter adapter;
     private List<Note> noteList;
@@ -31,7 +37,19 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = getSharedPreferences("HyperNotesPrefs", MODE_PRIVATE);
+        if (!prefs.contains("accent_color")) {
+            startActivity(new Intent(this, AccentColorActivity.class));
+            finish();
+            return;
+        }
+
+        // Apply the saved accent color
+        int accentColor = prefs.getInt(KEY_ACCENT_COLOR, ContextCompat.getColor(this, R.color.colorAccent));
+        applyAccentColor(accentColor);
         setContentView(R.layout.activity_main);
 
         // Initialize views
@@ -79,6 +97,14 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
             }
         });
     }
+
+    private void applyAccentColor(int color) {
+        // Set system bar colors dynamically
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(color); // Change status bar color
+        window.setNavigationBarColor(color); // Change navigation bar color
+    }
     
     private int calculateSpanCount() {
         // Get the screen width
@@ -111,27 +137,33 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNot
     }
 
     private void addNewNote(String title, String content, int colorIndex, int symbolIndex, String customEmoji) {
-        // Create a new note with the provided parameters
-        Note newNote = new Note(title, 
+        try {
+            // Create a new note with the provided parameters
+            Note newNote = new Note(title, 
                             content.isEmpty() ? getString(R.string.tap_to_edit) : content, 
                             System.currentTimeMillis());
+            
+            // Store the selection in the note-specific maps
+            if (colorIndex >= 0) {
+                adapter.setNoteColor(newNote.getTimestamp(), colorIndex);
+            }
         
-        // Store the selection in the note-specific maps
-        if (colorIndex >= 0) {
-            adapter.setNoteColor(newNote.getTimestamp(), colorIndex);
+            if (symbolIndex >= 0) {
+                adapter.setNoteSymbol(newNote.getTimestamp(), symbolIndex);
+            } else if (customEmoji != null) {
+                adapter.setNoteCustomEmoji(newNote.getTimestamp(), customEmoji);
+            }
+            
+            noteList.add(0, newNote);
+            adapter.notifyItemInserted(0);
+            recyclerView.smoothScrollToPosition(0);
+            
+            Toast.makeText(this, R.string.note_created, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            // This will show exactly what's causing the crash
+            Toast.makeText(this, "Error creating note: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         }
-    
-        if (symbolIndex >= 0) {
-            adapter.setNoteSymbol(newNote.getTimestamp(), symbolIndex);
-        } else if (customEmoji != null) {
-            adapter.setNoteCustomEmoji(newNote.getTimestamp(), customEmoji);
-        }
-        
-        noteList.add(0, newNote);
-        adapter.notifyItemInserted(0);
-        recyclerView.smoothScrollToPosition(0);
-        
-        Toast.makeText(this, R.string.note_created, Toast.LENGTH_SHORT).show();
     }
 
     private void toggleTheme() {

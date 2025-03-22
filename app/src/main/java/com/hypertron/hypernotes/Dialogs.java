@@ -85,10 +85,9 @@ public class Dialogs {
     /**
      * Show dialog for selecting a symbol
      */
-    
     public static void showSymbolChooserDialog(Context context, int currentSymbolIndex, SymbolSelectionListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
+        
         // Inflate custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.dialog_symbols, null);
@@ -102,35 +101,42 @@ public class Dialogs {
         if (recyclerView == null) {
             return; // Prevent crash if RecyclerView is not found
         }
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        
+        // Set up with a grid layout
+        int spanCount = 4; // Number of columns in the grid
+        GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
+        recyclerView.setLayoutManager(layoutManager);
 
-        // Get buttons
-        Button customEmojiButton = dialogView.findViewById(R.id.custom_emoji_button);
+        // Get cancel button
         Button cancelButton = dialogView.findViewById(R.id.cancel_button);
 
-        if (customEmojiButton == null || cancelButton == null) {
-            return; // Prevent crash if buttons are missing
+        if (cancelButton == null) {
+            return; // Prevent crash if button is missing
         }
 
-        // Create and set the adapter
-        SymbolAdapter adapter = new SymbolAdapter(context, false, (position, symbol, isRandom) -> {
-            if (listener != null) {
-                listener.onSymbolSelected(isRandom ? -1 : position, isRandom ? "🔀" : symbol);
+        // Create and set the adapter with special options
+        AlertDialog dialog = builder.create();
+        SymbolAdapter adapter = new SymbolAdapter(context, true, (position, symbol, isRandom) -> {
+            if (position == -2) {
+                // Custom emoji option selected
+                showCustomEmojiDialog(context, listener);
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            } else {
+                if (listener != null) {
+                    listener.onSymbolSelected(position, isRandom ? null : symbol);
+                }
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
             }
         });
         recyclerView.setAdapter(adapter);
-
-        // Create and show dialog
-        AlertDialog dialog = builder.create();
         
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background); // Ensure this resource exists
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
         }
-
-        customEmojiButton.setOnClickListener(v -> {
-            dialog.dismiss();
-            showCustomEmojiDialog(context, listener);
-        });
 
         cancelButton.setOnClickListener(v -> dialog.dismiss());
 

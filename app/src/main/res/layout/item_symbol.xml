@@ -26,8 +26,8 @@
     <!-- This TextView is styled to look like a symbol/icon -->
     <TextView
         android:id="@+id/tvSymbolAsImage"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="24sp"

@@ -1,6 +1,6 @@
 <resources>
     <string-array name="note_symbols">
-        <!-- Original symbols -->
+        <!-- Typographic symbols -->
         <item>✿</item>  <!-- flower -->
         <item>☽</item>  <!-- moon -->
         <item>☼</item>  <!-- compass/sun symbol -->
@@ -41,6 +41,13 @@
         <item>♥</item>  <!-- heart -->
         <item>♠</item>  <!-- spade -->
         <item>♣</item>  <!-- club -->
-        <item>🔀</item> <!-- shuffle -->
+        <item>§</item>  <!-- section -->
+        <item>¶</item>  <!-- paragraph -->
+        <item>†</item>  <!-- dagger -->
+        <item>‡</item>  <!-- double dagger -->
+        <item>•</item>  <!-- bullet -->
+        <item>⁂</item>  <!-- asterism -->
+        <item>⁜</item>  <!-- dotted cross -->
+        <item>⁕</item>  <!-- flower punctuation -->
     </string-array>
 </resources>

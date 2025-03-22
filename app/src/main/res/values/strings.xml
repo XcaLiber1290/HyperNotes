@@ -33,6 +33,7 @@
     <string name="choose_emoji">Choose Emoji</string>
     <string name="enter_emoji_hint">Enter emoji 😊</string>
     <string name="random_shuffle_hint">The shuffle icon indicates a random symbol will be chosen</string>
+    <string name="add_custom_symbol">Add Custom Symbol</string>
     <string-array name="color_names">
         <item>Pink</item>
         <item>Purple</item>

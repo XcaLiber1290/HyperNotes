@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import android.graphics.Typeface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.ViewHolder
         this.symbols = new ArrayList<>();
         if (includeSpecial) {
             // Shuffle option
-            this.symbols.add("🔀");
+            this.symbols.add("⟳");
             // Add custom option
             this.symbols.add("+");
         }
@@ -74,6 +75,10 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.ViewHolder
         String symbol = symbols.get(position);
         holder.symbolText.setText(symbol);
         
+        // Apply a font that doesn't render emojis
+        Typeface nonEmojiFont = Typeface.create("serif", Typeface.NORMAL);
+        holder.symbolText.setTypeface(nonEmojiFont);
+        
         int viewType = getItemViewType(position);
         
         if (viewType == VIEW_TYPE_RANDOM) {
@@ -91,7 +96,7 @@ public class SymbolAdapter extends RecyclerView.Adapter<SymbolAdapter.ViewHolder
                     listener.onSymbolClick(-2, symbol, false);
                 } else {
                     listener.onSymbolClick(position - (symbols.contains("🔀") ? 1 : 0) - (symbols.contains("+") ? 1 : 0), 
-                                         symbol, false);
+                                        symbol, false);
                 }
             }
         });

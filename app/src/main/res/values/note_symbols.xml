@@ -2,10 +2,8 @@
     <string-array name="note_symbols">
         <!-- Typographic symbols -->
         <item>✿</item>  <!-- flower -->
-        <item>☽</item>  <!-- moon -->
         <item>☼</item>  <!-- compass/sun symbol -->
         <item>❀</item>  <!-- flower alternative -->
-        <item>☀</item>  <!-- sun -->
         <item>➔</item>  <!-- arrow/plane -->
         <item>❋</item>  <!-- flower shape -->
         <item>✧</item>  <!-- star -->
@@ -37,10 +35,6 @@
         <item>○</item>  <!-- circle outline -->
         <item>→</item>  <!-- arrow -->
         <item>☆</item>  <!-- star outline -->
-        <item>♦</item>  <!-- diamond playing card -->
-        <item>♥</item>  <!-- heart -->
-        <item>♠</item>  <!-- spade -->
-        <item>♣</item>  <!-- club -->
         <item>§</item>  <!-- section -->
         <item>¶</item>  <!-- paragraph -->
         <item>†</item>  <!-- dagger -->

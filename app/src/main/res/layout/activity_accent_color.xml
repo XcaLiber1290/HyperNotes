@@ -20,17 +20,73 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selected Color"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"/>
+        
     <View
         android:id="@+id/colorPreview"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="8dp"/>
+        
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+        
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginEnd="16dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Light Variant"
+                android:textSize="14sp"/>
+                
+            <View
+                android:id="@+id/lightVariantPreview"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginStart="16dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dark Variant"
+                android:textSize="14sp"/>
+                
+            <View
+                android:id="@+id/darkVariantPreview"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnCustomColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pick Custom Color"/>
+        android:text="Pick Custom Color"
+        android:layout_marginTop="20dp"/>
 
     <Button
         android:id="@+id/btnConfirm"

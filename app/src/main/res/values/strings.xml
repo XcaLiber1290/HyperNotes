@@ -34,6 +34,14 @@
     <string name="enter_emoji_hint">Enter emoji 😊</string>
     <string name="random_shuffle_hint">The shuffle icon indicates a random symbol will be chosen</string>
     <string name="add_custom_symbol">Add Custom Symbol</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="error_empty_title">Title cannot be empty</string>
+    <string name="note_saved">Note saved</string>
+    <string name="action_search">Search</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="change_accent_color">Change Accent Color</string>
+    <string name="action_settings">Settings</string>
     <string-array name="color_names">
         <item>Pink</item>
         <item>Purple</item>

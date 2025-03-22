@@ -1,225 +1,261 @@
 package com.hypertron.hypernotes;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.PopupMenu;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
-import android.util.TypedValue;
-import android.view.Window;
-import android.view.WindowManager;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import androidx.core.content.ContextCompat;
 
-public class MainActivity extends AppCompatActivity implements NoteAdapter.OnNoteClickListener {
+public class MainActivity extends AppCompatActivity {
 
-    private static final String KEY_ACCENT_COLOR = "accent_color";
+    private static final String PREFS_NAME = "HyperNotesPrefs";
+    private static final String KEY_FIRST_RUN = "first_run";
+    private static final String KEY_THEME_MODE = "theme_mode";
+    
     private RecyclerView recyclerView;
-    private NoteAdapter adapter;
-    private List<Note> noteList;
-    private boolean isDarkMode = false;
-
-    private int getThemeColor(int attr) {
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(attr, typedValue, true);
-        return typedValue.data;
-    }
-
+    private NoteAdapter noteAdapter;
+    private List<Note> notesList;
+    private FloatingActionButton fabAdd;
+    private FloatingActionButton fabTheme;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-
-        SharedPreferences prefs = getSharedPreferences("HyperNotesPrefs", MODE_PRIVATE);
-        if (!prefs.contains("accent_color")) {
+        // Check if this is the first run
+        if (isFirstRun()) {
+            // Redirect to AccentColorActivity for first-time setup
             startActivity(new Intent(this, AccentColorActivity.class));
             finish();
             return;
         }
-
-        // Apply the saved accent color
-        int accentColor = prefs.getInt(KEY_ACCENT_COLOR, ContextCompat.getColor(this, R.color.colorAccent));
-        applyAccentColor(accentColor);
+        
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        
+        // Set up toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar_layout);
+        setSupportActionBar(toolbar);
+        
         // Initialize views
         recyclerView = findViewById(R.id.recyclerView);
-        FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
-        FloatingActionButton fabTheme = findViewById(R.id.fabTheme);
-        ImageButton menuButton = findViewById(R.id.menu_button);
-
-        // Set up menu button
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopupMenu(v);
-            }
-        });
-
-        // Set up RecyclerView
-        noteList = new ArrayList<>();
-        adapter = new NoteAdapter(this, noteList, this);
+        fabAdd = findViewById(R.id.fabAdd);
+        fabTheme = findViewById(R.id.fabTheme);
         
-        // Calculate number of columns based on screen width
-        int spanCount = calculateSpanCount();
-        GridLayoutManager layoutManager = new GridLayoutManager(this, spanCount);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-
-        // Set up add button click listener
-        fabAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Dialogs.showAddNoteDialog(MainActivity.this, new Dialogs.AddNoteListener() {
-                    @Override
-                    public void onNoteAdded(String title, String content, int colorIndex, int symbolIndex, String customEmoji) {
-                        addNewNote(title, content, colorIndex, symbolIndex, customEmoji);
-                    }
-                });
-            }
-        });
-
-        // Set up theme toggle button click listener
-        fabTheme.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleTheme();
-            }
-        });
-    }
-
-    private void applyAccentColor(int color) {
-        // Set system bar colors dynamically
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(color); // Change status bar color
-        window.setNavigationBarColor(color); // Change navigation bar color
+        // Apply accent colors to UI elements
+        applyAccentColors();
+        
+        // Set up recycler view
+        setupRecyclerView();
+        
+        // Set up click listeners
+        setupClickListeners();
     }
     
-    private int calculateSpanCount() {
-        // Get the screen width
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+    private boolean isFirstRun() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isFirstRun = prefs.getBoolean(KEY_FIRST_RUN, true);
         
-        // Calculate how many notes can fit on screen (assuming each note is about 180dp wide)
-        int noteWidth = getResources().getDimensionPixelSize(R.dimen.note_width);
+        if (isFirstRun) {
+            // Set first run flag to false
+            prefs.edit().putBoolean(KEY_FIRST_RUN, false).apply();
+        }
         
-        // Return at least 2 columns, more on wider screens
-        return Math.max(2, screenWidth / noteWidth);
+        return isFirstRun;
     }
-
-    private void showPopupMenu(View view) {
-        PopupMenu popupMenu = new PopupMenu(this, view);
-        popupMenu.inflate(R.menu.main_menu);
+    
+    private void applyAccentColors() {
+        // Get accent colors
+        int accentColor = AccentColorActivity.getAccentColor(this);
         
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        // Apply to Floating Action Buttons
+        if (fabAdd != null) {
+            fabAdd.setBackgroundTintList(ColorStateList.valueOf(accentColor));
+        }
+        
+        if (fabTheme != null) {
+            fabTheme.setBackgroundTintList(ColorStateList.valueOf(accentColor));
+        }
+        
+        // You can apply to other UI elements as needed
+    }
+    
+    private void setupRecyclerView() {
+        // Initialize notes list (typically loaded from database)
+        notesList = new ArrayList<>();
+        
+        // Sample notes for demonstration
+        // In a real app, you would load these from a database
+        notesList.add(new Note(1, "Shopping List", "Milk, Eggs, Bread", System.currentTimeMillis(), R.color.note_blue));
+        notesList.add(new Note(2, "Meeting Notes", "Discuss project timeline", System.currentTimeMillis(), R.color.note_yellow));
+        notesList.add(new Note(3, "Ideas", "App features: dark mode, export options", System.currentTimeMillis(), R.color.note_green));
+        
+        // Set up adapter
+        noteAdapter = new NoteAdapter(this, notesList);
+        
+        // Determine number of columns based on orientation
+        int orientation = getResources().getConfiguration().orientation;
+        int spanCount = orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2;
+        
+        // Set layout manager
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(noteAdapter);
+    }
+    
+    private void setupClickListeners() {
+        // FAB for adding new notes
+        fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_settings) {
-                    // Handle settings click
-                    Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
+            public void onClick(View v) {
+                // Launch NoteEditorActivity to create a new note
+                Intent intent = new Intent(MainActivity.this, NoteEditorActivity.class);
+                startActivity(intent);
             }
         });
         
-        popupMenu.show();
-    }
-
-    private void addNewNote(String title, String content, int colorIndex, int symbolIndex, String customEmoji) {
-        try {
-            // Create a new note with the provided parameters
-            Note newNote = new Note(title, 
-                            content.isEmpty() ? getString(R.string.tap_to_edit) : content, 
-                            System.currentTimeMillis());
-            
-            // Store the selection in the note-specific maps
-            if (colorIndex >= 0) {
-                adapter.setNoteColor(newNote.getTimestamp(), colorIndex);
+        // FAB for toggling theme
+        fabTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleThemeMode();
             }
+        });
+    }
+    
+    private void toggleThemeMode() {
+        // Get current night mode
+        int currentNightMode = getResources().getConfiguration().uiMode & 
+                                Configuration.UI_MODE_NIGHT_MASK;
         
-            if (symbolIndex >= 0) {
-                adapter.setNoteSymbol(newNote.getTimestamp(), symbolIndex);
-            } else if (customEmoji != null) {
-                adapter.setNoteCustomEmoji(newNote.getTimestamp(), customEmoji);
-            }
-            
-            noteList.add(0, newNote);
-            adapter.notifyItemInserted(0);
-            recyclerView.smoothScrollToPosition(0);
-            
-            Toast.makeText(this, R.string.note_created, Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            // This will show exactly what's causing the crash
-            Toast.makeText(this, "Error creating note: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-    }
-
-    private void toggleTheme() {
-        isDarkMode = !isDarkMode;
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        // Toggle mode
+        int newMode;
+        if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+            newMode = AppCompatDelegate.MODE_NIGHT_NO;
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            newMode = AppCompatDelegate.MODE_NIGHT_YES;
         }
-        Toast.makeText(this, isDarkMode ? R.string.dark_mode : R.string.light_mode, Toast.LENGTH_SHORT).show();
+        
+        // Save preference
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        prefs.edit().putInt(KEY_THEME_MODE, newMode).apply();
+        
+        // Apply new theme
+        AppCompatDelegate.setDefaultNightMode(newMode);
+        recreate();
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        
         if (id == R.id.action_settings) {
-            // Open settings
-            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
+            // Open settings activity
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_change_accent) {
+            // Open accent color chooser
+            Intent intent = new Intent(this, AccentColorActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_search) {
+            // Handle search
+            // Implement search functionality
             return true;
         }
+        
         return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
-    public void onNoteClick(int position) {
-        // Open note for editing
-        Note note = noteList.get(position);
-        // Start NoteDetailActivity here with the selected note
-        Toast.makeText(this, getString(R.string.opening) + " " + note.getTitle(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNoteLongClick(int position) {
-        // Show options menu for the note (delete, share, etc.)
-        Dialogs.showNoteOptionsDialog(this, position, new Dialogs.NoteOptionsListener() {
-            @Override
-            public void onNoteEdit(int position) {
-                onNoteClick(position);
-            }
-
-            @Override
-            public void onNoteDelete(int position) {
-                deleteNote(position);
-            }
-        });
+    protected void onResume() {
+        super.onResume();
+        // Refresh notes list when returning to activity
+        // In a real app, you would reload from database
+        if (noteAdapter != null) {
+            noteAdapter.notifyDataSetChanged();
+        }
+        
+        // Reapply accent colors in case they were changed
+        applyAccentColors();
     }
     
-    private void deleteNote(int position) {
-        noteList.remove(position);
-        adapter.notifyItemRemoved(position);
-        Toast.makeText(MainActivity.this, R.string.note_deleted, Toast.LENGTH_SHORT).show();
+    // Note class for demonstration (normally would be in a separate file)
+    public static class Note {
+        private long id;
+        private String title;
+        private String content;
+        private long timestamp;
+        private int colorResId;
+        
+        public Note(long id, String title, String content, long timestamp, int colorResId) {
+            this.id = id;
+            this.title = title;
+            this.content = content;
+            this.timestamp = timestamp;
+            this.colorResId = colorResId;
+        }
+        
+        public long getId() { return id; }
+        public String getTitle() { return title; }
+        public String getContent() { return content; }
+        public long getTimestamp() { return timestamp; }
+        public int getColorResId() { return colorResId; }
+    }
+    
+    // NoteAdapter class for demonstration (normally would be in a separate file)
+    public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
+        private android.content.Context context;
+        private List<Note> notes;
+        
+        public NoteAdapter(android.content.Context context, List<Note> notes) {
+            this.context = context;
+            this.notes = notes;
+        }
+        
+        @Override
+        public NoteViewHolder onCreateViewHolder(android.view.ViewGroup parent, int viewType) {
+            android.view.View view = android.view.LayoutInflater.from(context)
+                .inflate(R.layout.item_note, parent, false);
+            return new NoteViewHolder(view);
+        }
+        
+        @Override
+        public void onBindViewHolder(NoteViewHolder holder, int position) {
+            Note note = notes.get(position);
+            // Bind note data to ViewHolder
+            // Implementation depends on your item_note.xml layout
+        }
+        
+        @Override
+        public int getItemCount() {
+            return notes.size();
+        }
+        
+        public class NoteViewHolder extends RecyclerView.ViewHolder {
+            // Define views from item_note.xml
+            
+            public NoteViewHolder(android.view.View itemView) {
+                super(itemView);
+                // Initialize views
+                // Set click listener for opening note
+            }
+        }
     }
 }

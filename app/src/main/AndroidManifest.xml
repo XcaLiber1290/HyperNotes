@@ -17,6 +17,11 @@
         <activity android:name=".AccentColorActivity"
             android:exported="true"
             android:theme="@style/Theme.HyperNotes"/>
+        
+        <activity 
+            android:name=".NoteEditorActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
 
     </application>
 </manifest>

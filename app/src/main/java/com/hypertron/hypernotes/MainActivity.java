@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
                     String title = data.getStringExtra("title");
                     String content = data.getStringExtra("content");
                     int colorIndex = data.getIntExtra("colorIndex", -1);
+                    int symbolIndex = data.getIntExtra("symbolIndex", -1);
+                    String customEmoji = data.getStringExtra("customEmoji");
                     
                     int colorResId;
                     if (colorIndex == -1) {
@@ -80,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
                     
                     long newId = System.currentTimeMillis();
                     Note newNote = new Note(newId, title, content, System.currentTimeMillis(), colorResId);
+                    
+                    // Set the symbol index and custom emoji
+                    newNote.setSymbolIndex(symbolIndex);
+                    if (customEmoji != null) {
+                        newNote.setCustomEmoji(customEmoji);
+                    }
                     
                     notesList.add(0, newNote);
                     noteAdapter.notifyItemInserted(0);

@@ -45,6 +45,7 @@
     <string name="note_preview">Note Preview</string>
     <string name="save_note">Save Note</string>
     <string name="create_note">Create Note</string>
+    <string name="note_symbol_description">Note symbol</string>
     <string-array name="color_names">
         <item>Pink</item>
         <item>Purple</item>

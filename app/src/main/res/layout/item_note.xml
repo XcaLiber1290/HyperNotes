@@ -24,15 +24,16 @@
         <!-- Icon in the center (larger & bolder) -->
         <TextView
             android:id="@+id/tvIcon"
-            android:layout_width="64dp" 
+            android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:textSize="36sp" 
-            android:textStyle="bold" 
+            android:textSize="36sp"
+            android:textStyle="bold"
             android:fontFamily="serif"
-            android:textColor="#111111" 
-            android:contentDescription="@string/note_icon" />
+            android:textColor="#111111"
+            android:contentDescription="@arrays/note_symbols" />
+
 
         <!-- Footer container -->
         <LinearLayout

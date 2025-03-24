@@ -34,7 +34,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
+    public void onBindViewHolder(NoteViewHolder holder, int position) {
         Note note = notes.get(position);
         
         // Set title
@@ -45,12 +45,18 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         holder.tvTime.setText(sdf.format(new Date(note.getTimestamp())));
         
         // Set symbol/emoji
-        String[] symbols = context.getResources().getStringArray(R.array.note_symbols);
-        int symbolIndex = note.getSymbolIndex() == -1 ? 
-                new Random().nextInt(symbols.length) : note.getSymbolIndex();
-        holder.tvIcon.setText(symbols[Math.min(symbolIndex, symbols.length - 1)]);
+        String symbol;
+        if (note.getSymbolIndex() == -2 && note.getCustomEmoji() != null) {
+            symbol = note.getCustomEmoji();
+        } else {
+            String[] symbols = context.getResources().getStringArray(R.array.note_symbols);
+            int symbolIndex = note.getSymbolIndex() == -1 ? 
+                    new Random().nextInt(symbols.length) : note.getSymbolIndex();
+            symbol = symbols[Math.min(symbolIndex, symbols.length - 1)];
+        }
+        holder.tvIcon.setText(symbol);
         
-        // Set card color - using the non-deprecated method
+        // Set card color
         int colorResId = note.getColorResId();
         int color;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -59,17 +65,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             color = context.getResources().getColor(colorResId);
         }
         holder.cardView.setCardBackgroundColor(color);
-        
-        // Set on click listeners
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open note editor with this note
-                Intent intent = new Intent(context, NoteEditorActivity.class);
-                intent.putExtra("note_id", note.getId());
-                context.startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -77,13 +72,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         return notes.size();
     }
 
-    static class NoteViewHolder extends RecyclerView.ViewHolder {
+    public class NoteViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView tvTitle;
         TextView tvTime;
         TextView tvIcon;
-
-        NoteViewHolder(View itemView) {
+        
+        public NoteViewHolder(android.view.View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
